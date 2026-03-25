@@ -867,13 +867,33 @@ id="app-icon" and id="app-screenshot" and update their src attributes
 
       try {
         const forminit = new Forminit();
-        const { data, error } = await forminit.submit('1ax5qd9m8aj', new FormData(contactForm));
+        const { data, error } = await forminit.submit('1ax5qd9m8aj', {
+          blocks: [
+            {
+              type: 'sender',
+              properties: {
+                firstName: firstName,
+                lastName: document.getElementById('fi-sender-lastName').value.trim(),
+                email: email,
+              }
+            },
+            {
+              type: 'text',
+              name: 'message',
+              value: message,
+            }
+          ]
+        });
+
+        console.log('Forminit response:', { data, error });
 
         if (error) throw new Error(error.message);
 
         document.getElementById('contact-form-wrapper').style.display = 'none';
         contactSuccess.classList.add('visible');
       } catch (err) {
+        console.error('Forminit error:', err);
+        contactGlobalError.textContent = err.message || 'Something went wrong. Please try again in a moment.';
         contactGlobalError.classList.add('visible');
         contactSubmit.disabled = false;
         contactSubmit.textContent = 'Send message';
