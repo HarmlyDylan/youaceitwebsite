@@ -1,0 +1,811 @@
+<!--
+================================================
+ACEIT AI — HOW TO ADD YOUR OWN IMAGES
+================================================
+
+STEP 1: Create a folder called "images" in the same
+        directory as this index.html file
+
+STEP 2: APP ICON (top left)
+        Add your icon file as: images/icon.png
+        Recommended: 48x48px, square, will be rounded by CSS
+
+STEP 3: APP SCREENSHOT (inside phone frame)
+        Add your screenshot as: images/screenshot.png
+        Recommended: 390x844px (standard iPhone resolution)
+        The image will be cropped to fit the phone frame
+
+STEP 4: Open index.html in your browser — images appear automatically
+        No code changes needed if you use the exact filenames above
+
+To use different filenames, find the img tags with
+id="app-icon" and id="app-screenshot" and update their src attributes
+================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AceIt AI — Know exactly how ready you are</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: #F5F5F5;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #0D0D0D;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Logo ── */
+    .logo {
+      position: fixed;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 1200px;
+      padding: 0 80px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .logo-icon-wrapper {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background-color: #1DB88A;
+      flex-shrink: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #app-icon {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 9px;
+      display: block;
+    }
+
+    #app-icon.hidden {
+      display: none;
+    }
+
+    .logo-icon-fallback {
+      width: 100%;
+      height: 100%;
+      background-color: #1DB88A;
+      border-radius: 9px;
+      display: none;
+    }
+
+    .logo-icon-fallback.visible {
+      display: block;
+    }
+
+    .logo-text {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0D0D0D;
+      letter-spacing: -0.2px;
+    }
+
+    /* ── Main layout ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 80px;
+    }
+
+    .two-col {
+      display: flex;
+      align-items: center;
+      gap: 80px;
+    }
+
+    /* ── Left column ── */
+    .content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .heading {
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      color: #0D0D0D;
+      margin-bottom: 20px;
+    }
+
+    .subtext {
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: #666666;
+      margin-bottom: 32px;
+      max-width: 480px;
+    }
+
+    /* ── Waitlist form ── */
+    .form-wrapper {
+      margin-bottom: 16px;
+    }
+
+    .waitlist-form {
+      display: flex;
+      height: 48px;
+      max-width: 440px;
+    }
+
+    .waitlist-form input[type="email"] {
+      flex: 1;
+      height: 48px;
+      padding: 0 16px;
+      font-size: 15px;
+      font-family: inherit;
+      color: #0D0D0D;
+      background: #ffffff;
+      border: 1.5px solid #DDDDDD;
+      border-right: none;
+      border-radius: 24px 0 0 24px;
+      outline: none;
+      transition: border-color 0.15s;
+      min-width: 0;
+    }
+
+    .waitlist-form input[type="email"]::placeholder {
+      color: #AAAAAA;
+    }
+
+    .waitlist-form input[type="email"]:focus {
+      border-color: #1DB88A;
+    }
+
+    .waitlist-form button {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 24px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      color: #ffffff;
+      background-color: #1DB88A;
+      border: none;
+      border-radius: 0 24px 24px 0;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.15s;
+    }
+
+    .waitlist-form button:hover {
+      background-color: #18a87c;
+    }
+
+    .form-error {
+      display: none;
+      font-size: 13px;
+      color: #E53935;
+      margin-top: 8px;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    .form-success {
+      display: none;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1DB88A;
+      padding: 12px 0;
+    }
+
+    .form-success.visible {
+      display: block;
+    }
+
+    .follow-link {
+      display: inline-block;
+      font-size: 14px;
+      color: #AAAAAA;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .follow-link:hover {
+      color: #666666;
+    }
+
+    /* ── Right column — Phone ── */
+    .phone-col {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phone-frame {
+      position: relative;
+      width: 280px;
+      aspect-ratio: 9 / 19.5;
+      background-color: #1A1A1A;
+      border-radius: 44px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Dynamic island */
+    .dynamic-island {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 88px;
+      height: 26px;
+      background-color: #0A0A0A;
+      border-radius: 20px;
+      z-index: 2;
+    }
+
+    /* Inner screen */
+    .phone-screen {
+      position: absolute;
+      inset: 6px;
+      border-radius: 38px;
+      overflow: hidden;
+      background-color: #E8E8E8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #app-screenshot {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    #app-screenshot.hidden {
+      display: none;
+    }
+
+    .screenshot-fallback {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background-color: #E8E8E8;
+      color: #AAAAAA;
+      font-size: 14px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .screenshot-fallback.visible {
+      display: flex;
+    }
+
+    /* ── Contact section ── */
+    .contact-section {
+      background-color: #ffffff;
+      padding: 100px 0;
+    }
+
+    .contact-section .container {
+      max-width: 640px;
+    }
+
+    .contact-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #1DB88A;
+      margin-bottom: 12px;
+    }
+
+    .contact-heading {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      color: #0D0D0D;
+      margin-bottom: 12px;
+    }
+
+    .contact-subtext {
+      font-size: 16px;
+      color: #666666;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .contact-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .contact-field {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 6px;
+    }
+
+    .contact-field label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #444444;
+    }
+
+    .contact-field input,
+    .contact-field textarea {
+      font-family: inherit;
+      font-size: 15px;
+      color: #0D0D0D;
+      background: #F9F9F9;
+      border: 1.5px solid #E0E0E0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+      width: 100%;
+    }
+
+    .contact-field input::placeholder,
+    .contact-field textarea::placeholder {
+      color: #BBBBBB;
+    }
+
+    .contact-field input:focus,
+    .contact-field textarea:focus {
+      border-color: #1DB88A;
+      background: #ffffff;
+    }
+
+    .contact-field textarea {
+      resize: vertical;
+      min-height: 130px;
+      line-height: 1.6;
+    }
+
+    .contact-submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 50px;
+      padding: 0 32px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      color: #ffffff;
+      background-color: #1DB88A;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background-color 0.15s, opacity 0.15s;
+      align-self: flex-start;
+    }
+
+    .contact-submit:hover {
+      background-color: #18a87c;
+    }
+
+    .contact-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .contact-error {
+      display: none;
+      font-size: 13px;
+      color: #E53935;
+      margin-top: 4px;
+    }
+
+    .contact-error.visible {
+      display: block;
+    }
+
+    .contact-success {
+      display: none;
+      background-color: #F0FBF7;
+      border: 1.5px solid #B2E8D6;
+      border-radius: 12px;
+      padding: 20px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1DB88A;
+    }
+
+    .contact-success.visible {
+      display: block;
+    }
+
+    .contact-global-error {
+      display: none;
+      background-color: #FFF5F5;
+      border: 1.5px solid #FFCDD2;
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 14px;
+      color: #E53935;
+    }
+
+    .contact-global-error.visible {
+      display: block;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .contact-section {
+        padding: 72px 0;
+      }
+
+      .contact-heading {
+        font-size: 28px;
+      }
+
+      .contact-row {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .contact-submit {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .logo {
+        padding: 0 24px;
+        top: 24px;
+      }
+
+      .container {
+        padding: 0 24px;
+      }
+
+      .two-col {
+        flex-direction: column;
+        gap: 48px;
+        padding: 100px 0 60px;
+        align-items: flex-start;
+      }
+
+      .heading {
+        font-size: 36px;
+        letter-spacing: -1px;
+      }
+
+      .subtext {
+        font-size: 16px;
+        max-width: 100%;
+      }
+
+      .waitlist-form {
+        flex-direction: column;
+        height: auto;
+        max-width: 100%;
+        gap: 10px;
+      }
+
+      .waitlist-form input[type="email"] {
+        border-right: 1.5px solid #DDDDDD;
+        border-radius: 24px;
+        width: 100%;
+      }
+
+      .waitlist-form input[type="email"]:focus {
+        border-color: #1DB88A;
+      }
+
+      .waitlist-form button {
+        border-radius: 24px;
+        width: 100%;
+      }
+
+      .phone-col {
+        width: 100%;
+      }
+
+      .phone-frame {
+        width: 240px;
+      }
+
+      .hero {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Logo -->
+  <header class="logo">
+    <div class="logo-icon-wrapper">
+      <img id="app-icon" src="images/icon.png" alt="AceIt AI icon" />
+      <div class="logo-icon-fallback" id="icon-fallback"></div>
+    </div>
+    <span class="logo-text">AceIt AI</span>
+  </header>
+
+  <!-- Hero -->
+  <main class="hero">
+    <div class="container">
+      <div class="two-col">
+
+        <!-- Left: content -->
+        <div class="content">
+          <h1 class="heading">
+            The AI exam prep<br />
+            companion that knows<br />
+            when you're ready.
+          </h1>
+          <p class="subtext">
+            Stop guessing. Start knowing. AceIt AI tracks your revision, sleep, and energy — and tells you exactly how prepared you are.
+          </p>
+
+          <div class="form-wrapper">
+            <form class="waitlist-form" id="waitlist-form" novalidate>
+              <input type="email" id="email-input" placeholder="Enter your email" autocomplete="email" />
+              <button type="submit">Join waitlist</button>
+            </form>
+            <p class="form-error" id="form-error">Please enter a valid email address.</p>
+            <p class="form-success" id="form-success">You're on the list! We'll be in touch soon 🎉</p>
+          </div>
+
+          <a href="#" class="follow-link">Follow @aceitai for updates ↗</a>
+        </div>
+
+        <!-- Right: phone mockup -->
+        <div class="phone-col">
+          <div class="phone-frame">
+            <div class="dynamic-island"></div>
+            <div class="phone-screen">
+              <img id="app-screenshot" src="images/screenshot.png" alt="AceIt AI app screenshot" />
+              <div class="screenshot-fallback" id="screenshot-fallback">App Screenshot</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Contact section -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <p class="contact-label">Contact</p>
+      <h2 class="contact-heading">Get in touch</h2>
+      <p class="contact-subtext">Have a question, partnership idea, or just want to say hi? We'd love to hear from you.</p>
+
+      <div id="contact-form-wrapper">
+        <form class="contact-form" id="contact-form" novalidate>
+          <div class="contact-row">
+            <div class="contact-field">
+              <label for="fi-firstName">First name</label>
+              <input type="text" id="fi-firstName" name="fi-firstName" placeholder="Jane" autocomplete="given-name" />
+              <span class="contact-error" id="error-firstName">Please enter your first name.</span>
+            </div>
+            <div class="contact-field">
+              <label for="fi-lastName">Last name</label>
+              <input type="text" id="fi-lastName" name="fi-lastName" placeholder="Smith" autocomplete="family-name" />
+            </div>
+          </div>
+
+          <div class="contact-field">
+            <label for="fi-email">Email address</label>
+            <input type="email" id="fi-email" name="fi-email" placeholder="jane@example.com" autocomplete="email" />
+            <span class="contact-error" id="error-email">Please enter a valid email address.</span>
+          </div>
+
+          <div class="contact-field">
+            <label for="fi-message">Message</label>
+            <textarea id="fi-message" name="fi-message" placeholder="Tell us what's on your mind…"></textarea>
+            <span class="contact-error" id="error-message">Please enter a message.</span>
+          </div>
+
+          <div class="contact-global-error" id="contact-global-error">
+            Something went wrong. Please try again in a moment.
+          </div>
+
+          <button type="submit" class="contact-submit" id="contact-submit">Send message</button>
+        </form>
+      </div>
+
+      <div class="contact-success" id="contact-success">
+        Message sent! Thanks for reaching out — we'll get back to you soon.
+      </div>
+    </div>
+  </section>
+
+  <script src="https://forminit.com/sdk/v1/forminit.js"></script>
+  <script>
+    // ── Image fallbacks ──
+    const appIcon = document.getElementById('app-icon');
+    const iconFallback = document.getElementById('icon-fallback');
+
+    appIcon.addEventListener('error', function () {
+      appIcon.classList.add('hidden');
+      iconFallback.classList.add('visible');
+    });
+
+    const appScreenshot = document.getElementById('app-screenshot');
+    const screenshotFallback = document.getElementById('screenshot-fallback');
+
+    appScreenshot.addEventListener('error', function () {
+      appScreenshot.classList.add('hidden');
+      screenshotFallback.classList.add('visible');
+    });
+
+    // ── Waitlist form ──
+    const form = document.getElementById('waitlist-form');
+    const emailInput = document.getElementById('email-input');
+    const formError = document.getElementById('form-error');
+    const formSuccess = document.getElementById('form-success');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const email = emailInput.value.trim();
+      const isValid = email.length > 0 && email.includes('@');
+
+      if (!isValid) {
+        formError.classList.add('visible');
+        emailInput.style.borderColor = '#E53935';
+        return;
+      }
+
+      // Clear error state
+      formError.classList.remove('visible');
+      emailInput.style.borderColor = '';
+
+      // Show success
+      form.style.display = 'none';
+      formError.classList.remove('visible');
+      formSuccess.classList.add('visible');
+    });
+
+    // Clear error on input
+    emailInput.addEventListener('input', function () {
+      if (formError.classList.contains('visible')) {
+        formError.classList.remove('visible');
+        emailInput.style.borderColor = '';
+      }
+    });
+
+    // ── Contact form — Forminit ──
+    const contactForm = document.getElementById('contact-form');
+    const contactSubmit = document.getElementById('contact-submit');
+    const contactSuccess = document.getElementById('contact-success');
+    const contactGlobalError = document.getElementById('contact-global-error');
+
+    function showContactError(id, show) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('visible', show);
+    }
+
+    function highlightField(fieldId, invalid) {
+      const el = document.getElementById(fieldId);
+      if (el) el.style.borderColor = invalid ? '#E53935' : '';
+    }
+
+    contactForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const firstName = document.getElementById('fi-firstName').value.trim();
+      const email = document.getElementById('fi-email').value.trim();
+      const message = document.getElementById('fi-message').value.trim();
+
+      // Client-side validation
+      let valid = true;
+
+      if (!firstName) {
+        showContactError('error-firstName', true);
+        highlightField('fi-firstName', true);
+        valid = false;
+      } else {
+        showContactError('error-firstName', false);
+        highlightField('fi-firstName', false);
+      }
+
+      if (!email || !email.includes('@')) {
+        showContactError('error-email', true);
+        highlightField('fi-email', true);
+        valid = false;
+      } else {
+        showContactError('error-email', false);
+        highlightField('fi-email', false);
+      }
+
+      if (!message) {
+        showContactError('error-message', true);
+        highlightField('fi-message', true);
+        valid = false;
+      } else {
+        showContactError('error-message', false);
+        highlightField('fi-message', false);
+      }
+
+      if (!valid) return;
+
+      // Submit via Forminit SDK
+      contactSubmit.disabled = true;
+      contactSubmit.textContent = 'Sending…';
+      contactGlobalError.classList.remove('visible');
+
+      try {
+        const fi = new Forminit('1ax5qd9m8aj');
+        await fi.submit({
+          'fi-firstName': firstName,
+          'fi-lastName': document.getElementById('fi-lastName').value.trim(),
+          'fi-email': email,
+          'fi-message': message,
+        });
+
+        // Success
+        document.getElementById('contact-form-wrapper').style.display = 'none';
+        contactSuccess.classList.add('visible');
+      } catch (err) {
+        contactGlobalError.classList.add('visible');
+        contactSubmit.disabled = false;
+        contactSubmit.textContent = 'Send message';
+      }
+    });
+
+    // Clear field errors on input
+    ['fi-firstName', 'fi-lastName', 'fi-email', 'fi-message'].forEach(function (id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', function () {
+        highlightField(id, false);
+        const errorMap = {
+          'fi-firstName': 'error-firstName',
+          'fi-email': 'error-email',
+          'fi-message': 'error-message',
+        };
+        if (errorMap[id]) showContactError(errorMap[id], false);
+      });
+    });
+  </script>
+
+</body>
+</html>
