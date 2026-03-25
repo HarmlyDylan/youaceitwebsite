@@ -693,25 +693,25 @@ id="app-icon" and id="app-screenshot" and update their src attributes
         <form class="contact-form" id="contact-form" novalidate>
           <div class="contact-row">
             <div class="contact-field">
-              <label for="fi-firstName">First name</label>
-              <input type="text" id="fi-firstName" name="fi-firstName" placeholder="Jane" autocomplete="given-name" />
+              <label for="fi-sender-firstName">First name</label>
+              <input type="text" id="fi-sender-firstName" name="fi-sender-firstName" placeholder="Jane" autocomplete="given-name" />
               <span class="contact-error" id="error-firstName">Please enter your first name.</span>
             </div>
             <div class="contact-field">
-              <label for="fi-lastName">Last name</label>
-              <input type="text" id="fi-lastName" name="fi-lastName" placeholder="Smith" autocomplete="family-name" />
+              <label for="fi-sender-lastName">Last name</label>
+              <input type="text" id="fi-sender-lastName" name="fi-sender-lastName" placeholder="Smith" autocomplete="family-name" />
             </div>
           </div>
 
           <div class="contact-field">
-            <label for="fi-email">Email address</label>
-            <input type="email" id="fi-email" name="fi-email" placeholder="jane@example.com" autocomplete="email" />
+            <label for="fi-sender-email">Email address</label>
+            <input type="email" id="fi-sender-email" name="fi-sender-email" placeholder="jane@example.com" autocomplete="email" />
             <span class="contact-error" id="error-email">Please enter a valid email address.</span>
           </div>
 
           <div class="contact-field">
-            <label for="fi-message">Message</label>
-            <textarea id="fi-message" name="fi-message" placeholder="Tell us what's on your mind…"></textarea>
+            <label for="fi-text-message">Message</label>
+            <textarea id="fi-text-message" name="fi-text-message" placeholder="Tell us what's on your mind…"></textarea>
             <span class="contact-error" id="error-message">Please enter a message.</span>
           </div>
 
@@ -825,57 +825,52 @@ id="app-icon" and id="app-screenshot" and update their src attributes
     contactForm.addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      const firstName = document.getElementById('fi-firstName').value.trim();
-      const email = document.getElementById('fi-email').value.trim();
-      const message = document.getElementById('fi-message').value.trim();
+      const firstName = document.getElementById('fi-sender-firstName').value.trim();
+      const email = document.getElementById('fi-sender-email').value.trim();
+      const message = document.getElementById('fi-text-message').value.trim();
 
       // Client-side validation
       let valid = true;
 
       if (!firstName) {
         showContactError('error-firstName', true);
-        highlightField('fi-firstName', true);
+        highlightField('fi-sender-firstName', true);
         valid = false;
       } else {
         showContactError('error-firstName', false);
-        highlightField('fi-firstName', false);
+        highlightField('fi-sender-firstName', false);
       }
 
-      if (!email || !email.includes('@')) {
+      if (!emailRegex.test(email)) {
         showContactError('error-email', true);
-        highlightField('fi-email', true);
+        highlightField('fi-sender-email', true);
         valid = false;
       } else {
         showContactError('error-email', false);
-        highlightField('fi-email', false);
+        highlightField('fi-sender-email', false);
       }
 
       if (!message) {
         showContactError('error-message', true);
-        highlightField('fi-message', true);
+        highlightField('fi-text-message', true);
         valid = false;
       } else {
         showContactError('error-message', false);
-        highlightField('fi-message', false);
+        highlightField('fi-text-message', false);
       }
 
       if (!valid) return;
 
-      // Submit via Forminit SDK
       contactSubmit.disabled = true;
       contactSubmit.textContent = 'Sending…';
       contactGlobalError.classList.remove('visible');
 
       try {
-        const fi = new Forminit('1ax5qd9m8aj');
-        await fi.submit({
-          'fi-firstName': firstName,
-          'fi-lastName': document.getElementById('fi-lastName').value.trim(),
-          'fi-email': email,
-          'fi-message': message,
-        });
+        const forminit = new Forminit();
+        const { data, error } = await forminit.submit('1ax5qd9m8aj', new FormData(contactForm));
 
-        // Success
+        if (error) throw new Error(error.message);
+
         document.getElementById('contact-form-wrapper').style.display = 'none';
         contactSuccess.classList.add('visible');
       } catch (err) {
@@ -886,15 +881,15 @@ id="app-icon" and id="app-screenshot" and update their src attributes
     });
 
     // Clear field errors on input
-    ['fi-firstName', 'fi-lastName', 'fi-email', 'fi-message'].forEach(function (id) {
+    ['fi-sender-firstName', 'fi-sender-lastName', 'fi-sender-email', 'fi-text-message'].forEach(function (id) {
       const el = document.getElementById(id);
       if (!el) return;
       el.addEventListener('input', function () {
         highlightField(id, false);
         const errorMap = {
-          'fi-firstName': 'error-firstName',
-          'fi-email': 'error-email',
-          'fi-message': 'error-message',
+          'fi-sender-firstName': 'error-firstName',
+          'fi-sender-email': 'error-email',
+          'fi-text-message': 'error-message',
         };
         if (errorMap[id]) showContactError(errorMap[id], false);
       });
