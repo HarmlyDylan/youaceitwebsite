@@ -249,11 +249,42 @@ id="app-icon" and id="app-screenshot" and update their src attributes
       justify-content: center;
     }
 
+    .phone-frame {
+      position: relative;
+      width: 280px;
+      aspect-ratio: 9 / 19.5;
+      background-color: #1A1A1A;
+      border-radius: 44px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+    }
+
+    .dynamic-island {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 88px;
+      height: 26px;
+      background-color: #0A0A0A;
+      border-radius: 20px;
+      z-index: 2;
+    }
+
+    .phone-screen {
+      position: absolute;
+      inset: 6px;
+      border-radius: 38px;
+      overflow: hidden;
+      background-color: #E8E8E8;
+    }
+
     #app-screenshot {
-      width: 320px;
-      height: auto;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
       display: block;
-      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.12));
     }
 
     #app-screenshot.hidden {
@@ -262,10 +293,8 @@ id="app-icon" and id="app-screenshot" and update their src attributes
 
     .screenshot-fallback {
       display: none;
-      width: 280px;
-      aspect-ratio: 9 / 19.5;
-      background-color: #E8E8E8;
-      border-radius: 44px;
+      width: 100%;
+      height: 100%;
       align-items: center;
       justify-content: center;
       color: #AAAAAA;
@@ -506,8 +535,8 @@ id="app-icon" and id="app-screenshot" and update their src attributes
         width: 100%;
       }
 
-      #app-screenshot {
-        width: 260px;
+      .phone-frame {
+        width: 240px;
       }
 
       .hero {
@@ -557,8 +586,13 @@ id="app-icon" and id="app-screenshot" and update their src attributes
 
         <!-- Right: phone mockup -->
         <div class="phone-col">
-          <img id="app-screenshot" src="images/screenshot.png" alt="YouAceIt! app screenshot" />
-          <div class="screenshot-fallback" id="screenshot-fallback">App Screenshot</div>
+          <div class="phone-frame">
+            <div class="dynamic-island"></div>
+            <div class="phone-screen">
+              <img id="app-screenshot" src="images/screenshot.png" alt="YouAceIt! app screenshot" />
+              <div class="screenshot-fallback" id="screenshot-fallback">App Screenshot</div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -639,31 +673,46 @@ id="app-icon" and id="app-screenshot" and update their src attributes
     }
 
     // ── Waitlist form ──
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyu_Hoo-tHFzH7co3MLUCm7m2DXSLqog-KDF20K2G4XsTlV3bmIEbWmS1uk2jv3cqjAqw/exec';
+
     const form = document.getElementById('waitlist-form');
     const emailInput = document.getElementById('email-input');
     const formError = document.getElementById('form-error');
     const formSuccess = document.getElementById('form-success');
+    const submitBtn = form.querySelector('button[type="submit"]');
 
-    form.addEventListener('submit', function (e) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    form.addEventListener('submit', async function (e) {
       e.preventDefault();
 
       const email = emailInput.value.trim();
-      const isValid = email.length > 0 && email.includes('@');
 
-      if (!isValid) {
+      if (!emailRegex.test(email)) {
+        formError.textContent = 'Please enter a valid email address.';
         formError.classList.add('visible');
         emailInput.style.borderColor = '#E53935';
         return;
       }
 
-      // Clear error state
       formError.classList.remove('visible');
       emailInput.style.borderColor = '';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Joining…';
 
-      // Show success
-      form.style.display = 'none';
-      formError.classList.remove('visible');
-      formSuccess.classList.add('visible');
+      try {
+        await fetch(SHEETS_URL, {
+          method: 'POST',
+          body: JSON.stringify({ email }),
+        });
+        form.style.display = 'none';
+        formSuccess.classList.add('visible');
+      } catch (err) {
+        formError.textContent = 'Something went wrong. Please try again.';
+        formError.classList.add('visible');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Join waitlist';
+      }
     });
 
     // Clear error on input
