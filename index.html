@@ -301,8 +301,8 @@ id="app-icon" and id="app-screenshot" and update their src attributes
 
     .phone-frame {
       position: relative;
-      width: 270px;
-      aspect-ratio: 393 / 852;
+      width: 300px;
+      aspect-ratio: 498 / 913;
       background: linear-gradient(160deg, #2e2e2e 0%, #1a1a1a 100%);
       border-radius: 50px;
       box-shadow:
@@ -339,9 +339,6 @@ id="app-icon" and id="app-screenshot" and update their src attributes
       object-fit: cover;
       object-position: top center;
       display: block;
-      /* zoom in ~12% to crop the baked-in phone frame from the image */
-      transform: scale(1.13);
-      transform-origin: top center;
     }
 
     #app-screenshot.hidden {
@@ -531,7 +528,7 @@ id="app-icon" and id="app-screenshot" and update their src attributes
       .hero {
         align-items: flex-start;
         min-height: unset;
-        padding: 88px 0 48px;
+        padding: 88px 0 64px;
       }
 
       .container {
@@ -585,10 +582,11 @@ id="app-icon" and id="app-screenshot" and update their src attributes
       .phone-col {
         width: 100%;
         justify-content: center;
+        padding-bottom: 8px;
       }
 
       .phone-frame {
-        width: 220px;
+        width: 210px;
       }
 
       /* Contact section */
@@ -616,7 +614,7 @@ id="app-icon" and id="app-screenshot" and update their src attributes
       }
 
       .phone-frame {
-        width: 190px;
+        width: 175px;
       }
     }
   </style>
