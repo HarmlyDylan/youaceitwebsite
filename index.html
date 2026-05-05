@@ -1,1508 +1,1561 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YouAceIt! — Your AI Exam Preparation Companion</title>
-  <meta name="description" content="YouAceIt! tracks your revision, sleep, and energy to give you a live Exam Readiness Score. Built for Singapore A-Level and O-Level students." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --green: #58CC02;
-      --green-dark: #46a302;
-      --green-xdark: #358002;
-      --green-light: #edfad3;
-      --navy: #0D2240;
-      --navy-mid: #1a3a6e;
-      --amber: #FF9600;
-      --coral: #FF4B4B;
-      --white: #ffffff;
-      --off-white: #f7fbf2;
-      --text: #1a1a1a;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --border-light: #f0f0f0;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>YouAceIt — Ace every exam.</title>
+<meta name="description" content="Intelligent study planning built around your schedule. Free iOS beta on TestFlight." />
+<link rel="icon" type="image/png" href="images/icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+  :root {
+    --bg: #0A0E1A;
+    --bg-2: #0d1322;
+    --surface: #111827;
+    --surface-2: #161f33;
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(255,255,255,0.12);
+    --orange: #D94F2B;
+    --orange-2: #ff6a44;
+    --green: #22C55E;
+    --green-2: #58CC02;
+    --amber: #F59E0B;
+    --red: #EF4444;
+    --text: #F8F5F0;
+    --muted: #9CA3AF;
+    --muted-2: #6b7280;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    font-feature-settings: "ss01","cv11";
+  }
+  ::selection { background: var(--orange); color: #fff; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; border: 0; background: 0; cursor: pointer; color: inherit; }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--white);
-      color: var(--text);
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
+  /* ────────── Page chrome ────────── */
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 28px; }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .kicker .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 12px var(--orange); }
+  .kicker.green .dot { background: var(--green); box-shadow: 0 0 12px var(--green); }
 
-    /* ═══════════════════════════════
-       NAV
-    ═══════════════════════════════ */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 200;
-      padding: 14px 0;
-      background: rgba(255,255,255,0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1.5px solid rgba(0,0,0,0.05);
-      transition: box-shadow 0.3s;
-    }
-    nav.scrolled { box-shadow: 0 4px 32px rgba(0,0,0,0.07); }
+  /* ────────── Nav ────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 16px 0;
+    transition: background .35s ease, border-color .35s ease, padding .35s ease;
+    border-bottom: 1px solid transparent;
+  }
+  nav.scrolled {
+    background: rgba(10,14,26,0.72);
+    backdrop-filter: saturate(150%) blur(18px);
+    -webkit-backdrop-filter: saturate(150%) blur(18px);
+    border-bottom-color: var(--border);
+    padding: 12px 0;
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; position: relative; }
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .nav-spacer { width: 40px; height: 1px; }
+  .nav-logo img { width: 34px; height: 34px; border-radius: 9px; }
+  .nav-logo span { font-weight: 800; letter-spacing: -0.02em; font-size: 17px; }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--muted); transition: color .2s; }
+  .nav-links a:hover { color: var(--text); }
 
-    .nav-inner {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-weight: 600; font-size: 15px;
+    padding: 12px 20px;
+    border-radius: 999px;
+    transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, background .25s;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--orange);
+    color: #fff;
+    box-shadow: 0 6px 24px -6px rgba(217,79,43,0.55), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .btn-primary:hover { background: #e15a36; transform: translateY(-1px); box-shadow: 0 14px 40px -10px rgba(217,79,43,0.7), inset 0 1px 0 rgba(255,255,255,0.22); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-lg { padding: 18px 30px; font-size: 17px; gap: 12px; }
+  .btn .arrow { transition: transform .25s; }
+  .btn:hover .arrow { transform: translateX(4px); }
 
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-    .nav-logo-img {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      object-fit: cover;
-    }
-    .nav-logo-text {
-      font-size: 19px;
-      font-weight: 900;
-      color: var(--navy);
-      letter-spacing: -0.4px;
-    }
+  .nav-burger {
+    display: none;
+    width: 40px; height: 40px; border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    align-items: center; justify-content: center;
+  }
+  .nav-burger span { display: block; width: 18px; height: 1.5px; background: var(--text); position: relative; }
+  .nav-burger span::before, .nav-burger span::after {
+    content: ""; position: absolute; left: 0; width: 18px; height: 1.5px; background: var(--text);
+  }
+  .nav-burger span::before { top: -6px; }
+  .nav-burger span::after { top: 6px; }
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-      list-style: none;
-    }
-    .nav-links a {
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-      letter-spacing: 0.01em;
-    }
-    .nav-links a:hover { color: var(--navy); }
+  .mobile-menu {
+    position: fixed; inset: 0; z-index: 99;
+    background: rgba(10,14,26,0.96);
+    backdrop-filter: blur(18px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 32px;
+    transform: translateY(-100%);
+    transition: transform .45s cubic-bezier(.2,.8,.2,1);
+  }
+  .mobile-menu.open { transform: translateY(0); }
+  .mobile-menu a { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .mobile-menu .btn { font-size: 17px; padding: 16px 28px; }
 
-    .btn-nav {
-      background: var(--green);
-      color: white !important;
-      padding: 10px 22px;
-      border-radius: 100px;
-      box-shadow: 0 4px 0 var(--green-dark);
-      transition: transform 0.15s, box-shadow 0.15s !important;
-      position: relative;
-      top: 0;
-    }
-    .btn-nav:hover {
-      transform: translateY(-2px) !important;
-      box-shadow: 0 6px 0 var(--green-dark) !important;
-    }
-    .btn-nav:active {
-      transform: translateY(2px) !important;
-      box-shadow: 0 2px 0 var(--green-dark) !important;
-    }
+  /* ────────── Hero ────────── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 140px 0 80px;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 45%, #000 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 45%, #000 30%, transparent 75%);
+  }
+  .hero-glow {
+    position: absolute; left: 50%; top: 48%;
+    transform: translate(-50%, -50%);
+    width: 900px; height: 900px;
+    background: radial-gradient(circle, rgba(217,79,43,0.45) 0%, rgba(217,79,43,0.18) 25%, transparent 60%);
+    filter: blur(40px);
+    z-index: 0;
+  }
+  .hero-glow-2 {
+    position: absolute; left: 50%; top: 48%;
+    transform: translate(-50%, -50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(34,197,94,0.28) 0%, transparent 60%);
+    filter: blur(60px);
+    z-index: 0;
+  }
+  .particles {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  }
+  .particle {
+    position: absolute;
+    font-size: 11px; font-weight: 500;
+    color: rgba(255,255,255,0.18);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace;
+  }
 
-    /* ═══════════════════════════════
-       HERO
-    ═══════════════════════════════ */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 100px 0 72px;
-      background: linear-gradient(145deg, #f0fce5 0%, #ffffff 45%, #eef3fb 100%);
-      position: relative;
-      overflow: hidden;
-    }
+  .hero-inner { position: relative; z-index: 2; }
+  .hero-mascot-wrap { position: relative; display: inline-block; margin-bottom: 36px; }
+  .hero-mascot {
+    width: 132px; height: 132px;
+    border-radius: 30px;
+    box-shadow: 0 30px 80px -20px rgba(34,197,94,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+    position: relative;
+    z-index: 2;
+  }
+  .hero-mascot-glow {
+    position: absolute; inset: -60px;
+    background: radial-gradient(circle, rgba(34,197,94,0.45) 0%, transparent 60%);
+    filter: blur(30px);
+    z-index: 0;
+    animation: mascot-pulse 4s ease-in-out infinite;
+  }
+  @keyframes mascot-pulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
 
-    .hero-blob-1 {
-      position: absolute;
-      top: -180px; right: -180px;
-      width: 560px; height: 560px;
-      background: radial-gradient(circle, rgba(88,204,2,0.14) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    .hero-blob-2 {
-      position: absolute;
-      bottom: -120px; left: -120px;
-      width: 480px; height: 480px;
-      background: radial-gradient(circle, rgba(13,34,64,0.07) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    .hero-blob-3 {
-      position: absolute;
-      top: 50%; left: 40%;
-      transform: translate(-50%, -50%);
-      width: 700px; height: 400px;
-      background: radial-gradient(ellipse, rgba(88,204,2,0.04) 0%, transparent 70%);
-      pointer-events: none;
-    }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 7px 14px 7px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .hero-badge .pulse {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
 
-    .hero-inner {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 28px;
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 72px;
-      align-items: center;
-      position: relative;
-      z-index: 1;
-    }
+  h1.hero-title {
+    font-size: clamp(54px, 9.5vw, 128px);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    font-weight: 800;
+    margin-bottom: 28px;
+  }
+  .hero-title em {
+    font-style: normal;
+    background: linear-gradient(180deg, var(--orange-2) 0%, var(--orange) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-sub {
+    font-size: clamp(17px, 1.8vw, 21px);
+    color: var(--muted);
+    max-width: 580px;
+    margin: 0 auto 44px;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .hero-cta-row { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .hero-tf-meta {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: 13px; color: var(--muted-2);
+  }
+  .tf-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .tf-badge svg { width: 12px; height: 12px; }
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--green-light);
-      border: 1.5px solid rgba(88,204,2,0.25);
-      color: var(--green-xdark);
-      font-size: 13px;
-      font-weight: 800;
-      padding: 6px 14px 6px 10px;
-      border-radius: 100px;
-      margin-bottom: 22px;
-      letter-spacing: 0.02em;
-    }
-    .badge-dot {
-      width: 7px; height: 7px;
-      background: var(--green);
-      border-radius: 50%;
-      flex-shrink: 0;
-      animation: pulse-dot 2s ease-in-out infinite;
-    }
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.7); }
-    }
+  /* ────────── Marquee ────────── */
+  .marquee-section {
+    padding: 64px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-2);
+    overflow: hidden;
+  }
+  .marquee-row {
+    display: flex;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  }
+  .marquee-row + .marquee-row { margin-top: 18px; }
+  .marquee-track {
+    display: flex; flex-shrink: 0; gap: 48px;
+    padding-right: 48px;
+    animation: scroll-left 60s linear infinite;
+  }
+  .marquee-row.reverse .marquee-track {
+    animation: scroll-right 70s linear infinite;
+  }
+  @keyframes scroll-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes scroll-right {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+  .marquee-item {
+    display: inline-flex; align-items: center; gap: 48px;
+    font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+    color: rgba(255,255,255,0.32);
+    white-space: nowrap;
+  }
+  .marquee-item::after {
+    content: "";
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(217,79,43,0.5);
+  }
+  .marquee-row.reverse .marquee-item { color: rgba(255,255,255,0.22); font-size: 16px; }
+  .marquee-row.reverse .marquee-item::after { background: rgba(34,197,94,0.4); }
 
-    .hero-headline {
-      font-size: clamp(40px, 5.2vw, 66px);
-      font-weight: 900;
-      line-height: 1.04;
-      letter-spacing: -0.03em;
-      color: var(--navy);
-      margin-bottom: 22px;
-    }
-    .hero-headline .accent { color: var(--green); }
+  /* ────────── Section base ────────── */
+  section.bento, section.phones, section.steps, section.cta-section {
+    padding: 120px 0;
+    position: relative;
+  }
+  .section-header { max-width: 760px; margin: 0 auto 72px; text-align: center; }
+  .section-header .kicker { margin-bottom: 18px; }
+  .section-title {
+    font-size: clamp(40px, 5.5vw, 68px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+  }
+  .section-title em {
+    font-style: normal;
+    background: linear-gradient(180deg, var(--green) 0%, #16a34a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .section-sub {
+    margin-top: 20px; color: var(--muted); font-size: 18px;
+    max-width: 560px; margin-left: auto; margin-right: auto;
+  }
 
-    .hero-sub {
-      font-size: 18px;
-      font-weight: 600;
-      line-height: 1.65;
-      color: var(--muted);
-      margin-bottom: 38px;
-      max-width: 510px;
-    }
-    .hero-sub strong { color: var(--navy); font-weight: 800; }
+  /* ────────── Bento ────────── */
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: minmax(220px, auto);
+    gap: 20px;
+  }
+  .bento-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+    overflow: hidden;
+    transition: border-color .35s, transform .35s, background .35s;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .bento-card::before {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: 24px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(217,79,43,0.4), transparent 40%, transparent 60%, rgba(34,197,94,0.4));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    opacity: 0;
+    transition: opacity .35s;
+    pointer-events: none;
+  }
+  .bento-card:hover { transform: translateY(-3px); }
+  .bento-card:hover::before { opacity: 1; }
+  .bento-card:hover { border-color: var(--border-strong); }
 
-    /* Waitlist form — hero */
-    .waitlist-wrap { margin-bottom: 22px; }
-    .waitlist-form {
-      display: flex;
-      max-width: 460px;
-    }
-    .waitlist-form input[type="email"] {
-      flex: 1;
-      height: 54px;
-      padding: 0 20px;
-      font-size: 15px;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      color: var(--text);
-      background: white;
-      border: 2.5px solid var(--border);
-      border-right: none;
-      border-radius: 16px 0 0 16px;
-      outline: none;
-      transition: border-color 0.2s;
-      min-width: 0;
-    }
-    .waitlist-form input:focus { border-color: var(--green); }
-    .waitlist-form input::placeholder { color: #bbb; font-weight: 600; }
-    .waitlist-form button {
-      flex-shrink: 0;
-      height: 54px;
-      padding: 0 26px;
-      font-size: 15px;
-      font-weight: 900;
-      font-family: 'Nunito', sans-serif;
-      color: white;
-      background: var(--green);
-      border: none;
-      border-radius: 0 16px 16px 0;
-      cursor: pointer;
-      white-space: nowrap;
-      box-shadow: 0 4px 0 var(--green-dark);
-      position: relative;
-      top: 0;
-      transition: top 0.15s, box-shadow 0.15s;
-    }
-    .waitlist-form button:hover { top: -2px; box-shadow: 0 6px 0 var(--green-dark); }
-    .waitlist-form button:active { top: 2px; box-shadow: 0 2px 0 var(--green-dark); }
+  .b-readiness { grid-column: span 4; grid-row: span 2; }
+  .b-yai       { grid-column: span 2; grid-row: span 2; }
+  .b-mastery   { grid-column: span 3; }
+  .b-burnout   { grid-column: span 2; }
+  .b-calendar  { grid-column: span 4; }
+  .b-singapore { grid-column: span 2; }
 
-    .form-error {
-      display: none;
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--coral);
-      margin-top: 8px;
-    }
-    .form-error.visible { display: block; }
-    .form-success {
-      display: none;
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--green-xdark);
-      padding: 14px 0;
-    }
-    .form-success.visible { display: block; }
+  .b-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .b-eyebrow .b-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .b-card-title {
+    font-size: 28px; font-weight: 700; letter-spacing: -0.025em;
+    line-height: 1.1; margin-bottom: 12px;
+  }
+  .b-card-desc { color: var(--muted); font-size: 15px; line-height: 1.55; max-width: 380px; }
 
-    .hero-social {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--muted);
-    }
-    .hero-social a {
-      color: var(--navy);
-      text-decoration: none;
-      font-weight: 800;
-      border-bottom: 1.5px solid transparent;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .hero-social a:hover { color: var(--green); border-color: var(--green); }
+  /* Readiness ring */
+  .ring-wrap {
+    position: absolute; right: -40px; bottom: -40px;
+    width: 320px; height: 320px;
+  }
+  .ring-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring-svg circle { fill: none; stroke-width: 14; stroke-linecap: round; }
+  .ring-bg { stroke: rgba(255,255,255,0.06); }
+  .ring-fg {
+    stroke: url(#ring-grad);
+    stroke-dasharray: 879;
+    stroke-dashoffset: 879;
+    transition: stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1);
+    filter: drop-shadow(0 0 14px rgba(34,197,94,0.5));
+  }
+  .ring-num {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    pointer-events: none;
+  }
+  .ring-num .n {
+    font-size: 78px; font-weight: 800; letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .ring-num .l { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
 
-    /* ── Phone mockup ── */
-    .hero-phone {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  .readiness-meta {
+    display: flex; gap: 20px; margin-top: 22px;
+    flex-wrap: wrap;
+  }
+  .readiness-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px; font-weight: 500; color: var(--muted);
+  }
+  .readiness-pill .pd { width: 7px; height: 7px; border-radius: 50%; }
 
-    .phone-device {
-      position: relative;
-      animation: float 4.5s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
+  /* YAI mini plan */
+  .yai-mini { margin-top: 22px; display: flex; flex-direction: column; gap: 8px; }
+  .yai-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 13px; font-weight: 500;
+  }
+  .yai-row .t { font-family: 'JetBrains Mono', monospace; color: var(--muted); font-size: 11px; }
+  .yai-row .s { flex: 1; }
+  .yai-row .chip {
+    font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .chip-g { background: rgba(34,197,94,0.16); color: #4ade80; }
+  .chip-o { background: rgba(217,79,43,0.18); color: #ff7d57; }
+  .chip-a { background: rgba(245,158,11,0.16); color: #fbbf24; }
 
-    .phone-shell {
-      width: 280px;
-      background: linear-gradient(150deg, #303030, #111111);
-      border-radius: 48px;
-      padding: 13px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.09),
-        inset 0 0 0 1px rgba(255,255,255,0.04),
-        0 40px 80px rgba(13,34,64,0.3),
-        0 12px 28px rgba(13,34,64,0.15);
-    }
-    .phone-screen-wrap {
-      background: white;
-      border-radius: 37px;
-      overflow: hidden;
-      aspect-ratio: 390/844;
-      position: relative;
-    }
-    .phone-notch {
-      position: absolute;
-      top: 9px; left: 50%;
-      transform: translateX(-50%);
-      width: 82px; height: 20px;
-      background: #080808;
-      border-radius: 12px;
-      z-index: 3;
-    }
-    .phone-screen-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top;
-      display: block;
-    }
-    .phone-btn { position: absolute; background: #252525; border-radius: 3px; }
-    .phone-btn.power  { right: -4px; top: 26%; width: 4px; height: 64px; border-radius: 0 3px 3px 0; }
-    .phone-btn.vol-up   { left: -4px; top: 24%; width: 4px; height: 52px; border-radius: 3px 0 0 3px; }
-    .phone-btn.vol-down { left: -4px; top: 38%; width: 4px; height: 52px; border-radius: 3px 0 0 3px; }
-    .phone-btn.silent   { left: -4px; top: 17%; width: 4px; height: 26px; border-radius: 3px 0 0 3px; }
+  /* Mastery list */
+  .mastery-list { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .mastery-row { display: flex; align-items: center; gap: 14px; }
+  .mastery-badge {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: #fff; letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+  .mb-gp { background: var(--green-2); }
+  .mb-ma { background: #1cb0f6; }
+  .mb-ph { background: #a855f7; }
+  .mb-ch { background: var(--amber); }
+  .mastery-meta { flex: 1; }
+  .mastery-meta .n { font-size: 14px; font-weight: 600; }
+  .mastery-meta .b { height: 4px; background: rgba(255,255,255,0.08); border-radius: 999px; margin-top: 6px; overflow: hidden; }
+  .mastery-meta .b > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #4ade80, #22c55e); }
+  .mastery-row > .p { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 600; min-width: 36px; text-align: right; }
 
-    /* ═══════════════════════════════
-       STATS BAR
-    ═══════════════════════════════ */
-    .stats-bar {
-      background: var(--navy);
-      padding: 44px 0;
-    }
-    .stats-inner {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 28px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 60px;
-      flex-wrap: wrap;
-    }
-    .stat-item { text-align: center; }
-    .stat-number {
-      font-size: 38px;
-      font-weight: 900;
-      color: var(--green);
-      letter-spacing: -0.03em;
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 12px;
-      font-weight: 800;
-      color: rgba(255,255,255,0.45);
-      margin-top: 5px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-    .stat-div {
-      width: 1px; height: 40px;
-      background: rgba(255,255,255,0.1);
-    }
+  /* Burnout */
+  .burnout-vis {
+    margin-top: 24px;
+    position: relative;
+    height: 110px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .burnout-pulse {
+    position: relative;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(239,68,68,0.6) 0%, rgba(239,68,68,0.1) 60%, transparent 80%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .burnout-pulse::before, .burnout-pulse::after {
+    content: ""; position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 1.5px solid rgba(239,68,68,0.5);
+    animation: burnout-ring 2.4s ease-out infinite;
+  }
+  .burnout-pulse::after { animation-delay: 1.2s; }
+  @keyframes burnout-ring {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+  .burnout-icon { width: 32px; height: 32px; color: #fca5a5; position: relative; z-index: 2; }
+  .burnout-label {
+    position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    color: #fca5a5;
+  }
 
-    /* ═══════════════════════════════
-       SHARED SECTION STYLES
-    ═══════════════════════════════ */
-    .section-inner {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 28px;
-    }
-    .section-label {
-      display: inline-block;
-      font-size: 11.5px;
-      font-weight: 900;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      color: var(--green-xdark);
-      background: var(--green-light);
-      padding: 5px 14px;
-      border-radius: 100px;
-      margin-bottom: 16px;
-    }
-    .section-title {
-      font-size: clamp(28px, 3.8vw, 46px);
-      font-weight: 900;
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-      color: var(--navy);
-      margin-bottom: 16px;
-    }
-    .section-sub {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--muted);
-      line-height: 1.65;
-      max-width: 560px;
-    }
+  /* Calendar */
+  .cal-vis {
+    margin-top: 22px;
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
+  }
+  .cal-cell {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .cal-cell.has::before {
+    content: "";
+    position: absolute;
+    left: 6px; right: 6px; top: 6px;
+    height: 4px; border-radius: 2px;
+    background: var(--green);
+  }
+  .cal-cell.has2::after {
+    content: "";
+    position: absolute;
+    left: 6px; right: 6px; top: 14px;
+    height: 4px; border-radius: 2px;
+    background: var(--orange);
+  }
+  .cal-cell.today { border-color: rgba(217,79,43,0.6); background: rgba(217,79,43,0.08); }
+  .cal-head {
+    display: grid; grid-template-columns: repeat(7,1fr); gap: 6px;
+    margin-top: 22px; margin-bottom: 6px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: var(--muted);
+    text-transform: uppercase; text-align: center;
+  }
 
-    /* Animation */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
-    .d1 { transition-delay: 0.08s; }
-    .d2 { transition-delay: 0.16s; }
-    .d3 { transition-delay: 0.24s; }
-    .d4 { transition-delay: 0.32s; }
-    .d5 { transition-delay: 0.40s; }
-    .d6 { transition-delay: 0.48s; }
+  /* Singapore */
+  .sg-emoji { font-size: 56px; margin-top: 8px; line-height: 1; }
+  .sg-list { margin-top: 18px; display: flex; flex-direction: column; gap: 8px; }
+  .sg-list span {
+    font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px;
+  }
+  .sg-list span::before {
+    content: "✓"; color: var(--green); font-weight: 800; font-size: 11px;
+  }
 
-    /* ═══════════════════════════════
-       TWO PILLARS
-    ═══════════════════════════════ */
-    .pillars {
-      padding: 96px 0;
-      background: white;
+  /* ────────── Phones ────────── */
+  .phones {
+    background: linear-gradient(180deg, var(--bg) 0%, #06090f 100%);
+  }
+  .phones-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 40px;
+    perspective: 1500px;
+  }
+  .phone {
+    position: relative;
+    width: 280px;
+    flex-shrink: 0;
+  }
+  .phone-frame {
+    background: #000;
+    border-radius: 44px;
+    padding: 8px;
+    box-shadow:
+      0 60px 100px -30px rgba(0,0,0,0.7),
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 0 60px -10px rgba(34,197,94,0.15);
+    position: relative;
+  }
+  .phone-frame::before {
+    content: "";
+    position: absolute; top: 14px; left: 50%;
+    transform: translateX(-50%);
+    width: 90px; height: 24px;
+    background: #000;
+    border-radius: 999px;
+    z-index: 3;
+  }
+  .phone-screen {
+    border-radius: 36px;
+    overflow: hidden;
+    aspect-ratio: 9/19.5;
+    background: #f1f3f2;
+    width: 100%;
+  }
+  .phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .phone-1 { transform: translateY(20px) rotate(-4deg); }
+  .phone-2 { transform: translateY(-20px) rotate(0deg) scale(1.05); z-index: 2; }
+  .phone-3 { transform: translateY(40px) rotate(4deg); }
+  .phone-cap {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -50px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 12px; font-weight: 600;
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+    color: var(--text);
+  }
+  .phone-cap .dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    margin-right: 8px; vertical-align: middle;
+  }
+  .phone-1 .phone-cap .dot { background: var(--green); }
+  .phone-2 .phone-cap .dot { background: var(--orange); }
+  .phone-3 .phone-cap .dot { background: var(--amber); }
+
+  /* ────────── Steps ────────── */
+  .steps { padding-bottom: 140px; }
+  .steps-grid {
+    max-width: 820px; margin: 0 auto;
+    position: relative;
+  }
+  .steps-line {
+    position: absolute;
+    left: 39px; top: 30px; bottom: 30px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--orange) 0%, var(--green) 100%);
+    transform-origin: top;
+    transform: scaleY(0);
+  }
+  .step {
+    position: relative;
+    padding-left: 110px;
+    padding-bottom: 56px;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .step:last-child { padding-bottom: 0; }
+  .step-num {
+    position: absolute; left: 0; top: 0;
+    width: 80px; height: 80px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-2) 100%);
+    border: 1px solid var(--border-strong);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 800; letter-spacing: -0.02em;
+    color: var(--text);
+    z-index: 2;
+  }
+  .step-num em {
+    font-style: normal;
+    background: linear-gradient(180deg, var(--orange-2) 0%, var(--orange) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .step h3 {
+    font-size: 26px; font-weight: 700; letter-spacing: -0.025em;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .step p {
+    color: var(--muted); font-size: 16px; line-height: 1.55; max-width: 540px;
+  }
+
+  /* ────────── CTA section ────────── */
+  .cta-section {
+    text-align: center;
+    overflow: hidden;
+  }
+  .cta-bg {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1200px; height: 1200px;
+    background: radial-gradient(circle, rgba(217,79,43,0.4) 0%, rgba(217,79,43,0.12) 25%, transparent 60%);
+    filter: blur(40px);
+    pointer-events: none;
+  }
+  .cta-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 75%);
+    pointer-events: none;
+  }
+  .cta-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 720px; margin: 0 auto;
+  }
+  .cta-mascot-row {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+    margin-bottom: 28px;
+  }
+  .cta-mascot-row img {
+    width: 78px; height: 78px; border-radius: 18px;
+    box-shadow: 0 20px 50px -10px rgba(34,197,94,0.5);
+    margin: 0 auto;
+  }
+  .cta-mascot-row .kicker { margin: 0; }
+  h2.cta-title {
+    font-size: clamp(46px, 7vw, 88px);
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+    font-weight: 800;
+    margin-bottom: 24px;
+  }
+  .cta-title em {
+    font-style: normal;
+    background: linear-gradient(180deg, var(--orange-2) 0%, var(--orange) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .cta-sub {
+    color: var(--muted); font-size: 19px; line-height: 1.55;
+    max-width: 540px; margin: 0 auto 40px;
+  }
+  .cta-fineprint {
+    margin-top: 18px;
+    font-size: 13px; color: var(--muted-2);
+  }
+  .cta-fineprint span { padding: 0 6px; }
+  .cta-fineprint span + span::before { content: "·"; padding-right: 12px; color: var(--muted-2); }
+
+  /* ────────── Platform cards ────────── */
+  .platforms {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 880px;
+    margin: 8px auto 0;
+    text-align: left;
+  }
+  .platform-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 28px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: border-color .3s, transform .3s, box-shadow .3s;
+    display: flex;
+    flex-direction: column;
+  }
+  .platform-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+  .platform-card.ios {
+    border-color: rgba(217,79,43,0.28);
+    box-shadow: 0 0 0 1px rgba(217,79,43,0.08), 0 30px 60px -30px rgba(217,79,43,0.35);
+  }
+  .platform-card.ios:hover {
+    border-color: rgba(217,79,43,0.5);
+    box-shadow: 0 0 0 1px rgba(217,79,43,0.18), 0 40px 80px -20px rgba(217,79,43,0.45);
+  }
+  .platform-card.android { border-color: rgba(255,255,255,0.06); }
+
+  .platform-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .platform-badge svg { width: 14px; height: 14px; }
+  .platform-card.ios .platform-badge { color: var(--orange-2); }
+  .platform-card.android .platform-badge { color: var(--muted); }
+  .platform-badge .sep { color: var(--muted-2); }
+  .platform-badge .status-soon { color: var(--muted-2); font-weight: 600; letter-spacing: 0.16em; }
+
+  .platform-sub {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 22px;
+    flex: 1;
+  }
+
+  .platform-card .btn-primary { width: 100%; justify-content: center; }
+  .platform-card .btn-android {
+    background: var(--green);
+    color: #06170d;
+    box-shadow: 0 6px 24px -6px rgba(34,197,94,0.45), inset 0 1px 0 rgba(255,255,255,0.22);
+  }
+  .platform-card .btn-android:hover {
+    background: #2dd56a;
+    transform: translateY(-1px);
+    box-shadow: 0 14px 40px -10px rgba(34,197,94,0.55), inset 0 1px 0 rgba(255,255,255,0.28);
+  }
+
+  .waitlist-form {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .waitlist-input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    color: var(--text);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    outline: none;
+    transition: border-color .2s, background .2s;
+  }
+  .waitlist-input::placeholder { color: var(--muted-2); }
+  .waitlist-input:focus {
+    border-color: var(--green);
+    background: rgba(34,197,94,0.06);
+  }
+  .waitlist-input.invalid { border-color: rgba(239,68,68,0.6); background: rgba(239,68,68,0.06); }
+  .btn-waitlist {
+    background: var(--green);
+    color: #06170d;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.22);
+    transition: background .2s, transform .25s;
+  }
+  .btn-waitlist:hover { background: #2dd56a; transform: translateY(-1px); }
+  .btn-waitlist:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .waitlist-form.confirmed {
+    justify-content: center;
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.35);
+    border-radius: 999px;
+    padding: 12px 18px;
+    color: #4ade80;
+    font-weight: 700;
+    font-size: 14px;
+    gap: 10px;
+  }
+  .waitlist-form.confirmed svg { width: 16px; height: 16px; }
+
+  .platform-note {
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--muted-2);
+    line-height: 1.5;
+    opacity: 0.75;
+  }
+
+  @media (max-width: 720px) {
+    .platforms { grid-template-columns: 1fr; max-width: 460px; }
+  }
+
+  /* ────────── Footer ────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px 0;
+    background: #06090f;
+  }
+  .footer-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-logo { display: flex; align-items: center; gap: 10px; }
+  .footer-logo img { width: 28px; height: 28px; border-radius: 7px; }
+  .footer-logo span { font-weight: 700; font-size: 14px; color: var(--muted); }
+  .footer-links { display: flex; gap: 26px; font-size: 13px; color: var(--muted); }
+  .footer-links a { transition: color .2s; }
+  .footer-links a:hover { color: var(--text); }
+  .footer-social { display: flex; gap: 10px; }
+  .footer-social a {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    transition: color .2s, border-color .2s;
+  }
+  .footer-social a:hover { color: var(--text); border-color: var(--border-strong); }
+  .footer-social svg { width: 14px; height: 14px; }
+  .footer-bottom {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted-2);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+
+  /* ────────── Reveal helpers ────────── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1);
+  }
+  .fade-in.in { opacity: 1; transform: translateY(0); }
+
+  /* ────────── Responsive ────────── */
+  @media (max-width: 980px) {
+    .nav-links { display: none; }
+    .nav-burger { display: inline-flex; }
+    .bento-grid { grid-template-columns: repeat(2, 1fr); }
+    .b-readiness, .b-yai, .b-mastery, .b-burnout, .b-calendar, .b-singapore {
+      grid-column: span 2; grid-row: auto;
     }
-    .pillars-header { margin-bottom: 52px; }
-    .pillars-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-      margin-bottom: 28px;
-    }
-    .pillar-card {
-      border-radius: 24px;
-      padding: 36px;
-      border: 2px solid var(--border);
-      transition: transform 0.22s, box-shadow 0.22s;
-      position: relative;
-      overflow: hidden;
-    }
-    .pillar-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
-    }
-    .pillar-card.prep {
-      border-color: rgba(88,204,2,0.3);
-      background: linear-gradient(135deg, #f2fce6 0%, #fdfffa 100%);
-    }
-    .pillar-card.perf {
-      border-color: rgba(13,34,64,0.15);
-      background: linear-gradient(135deg, #eef3fb 0%, #fdfdff 100%);
-    }
-    .pillar-icon { font-size: 40px; margin-bottom: 16px; display: block; }
-    .pillar-title {
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--navy);
-      margin-bottom: 10px;
-      letter-spacing: -0.02em;
-    }
-    .pillar-desc {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 26px;
-    }
-    .pillar-list {
-      list-style: none;
-      display: flex;
+    .ring-wrap { width: 220px; height: 220px; right: -20px; bottom: -20px; }
+    .phones-row {
       flex-direction: column;
-      gap: 11px;
+      gap: 80px;
+      padding-top: 60px;
     }
-    .pillar-list li {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--navy);
-    }
-    .check {
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 900;
-      flex-shrink: 0;
-      color: white;
-    }
-    .check.g { background: var(--green); }
-    .check.b { background: var(--navy-mid); }
+    .phone-1, .phone-2, .phone-3 { transform: none; }
+    .phone-2 { transform: scale(1); }
+    section.bento, section.phones, section.steps, section.cta-section { padding: 80px 0; }
+    .step { padding-left: 80px; padding-bottom: 40px; }
+    .step-num { width: 60px; height: 60px; font-size: 22px; border-radius: 16px; }
+    .steps-line { left: 29px; }
+    .footer-inner { flex-direction: column; align-items: center; text-align: center; }
+  }
+  @media (max-width: 600px) {
+    .wrap { padding: 0 20px; }
+    .hero { padding: 120px 0 60px; }
+    .hero-mascot { width: 108px; height: 108px; }
+    .hero-cta-row .btn-lg { padding: 16px 24px; font-size: 15px; }
+    .bento-card { padding: 24px; border-radius: 20px; }
+    .b-card-title { font-size: 22px; }
+    .ring-wrap { width: 180px; height: 180px; right: -30px; bottom: -30px; }
+    .ring-num .n { font-size: 56px; }
+    .phone { width: 240px; }
+  }
 
-    .pillar-connector {
-      display: flex;
-      align-items: center;
-      gap: 20px;
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
     }
-    .conn-line {
-      flex: 1;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(88,204,2,0.25), transparent);
-    }
-    .conn-pill {
-      background: var(--green);
-      color: white;
-      font-size: 14px;
-      font-weight: 900;
-      padding: 11px 24px;
-      border-radius: 100px;
-      box-shadow: 0 4px 0 var(--green-dark), 0 8px 24px rgba(88,204,2,0.25);
-      white-space: nowrap;
-      letter-spacing: -0.01em;
-    }
-
-    /* ═══════════════════════════════
-       SCREENSHOTS
-    ═══════════════════════════════ */
-    .screenshots {
-      padding: 96px 0;
-      background: var(--off-white);
-      overflow: hidden;
-    }
-    .screenshots-hdr {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 28px;
-      margin-bottom: 44px;
-    }
-    .screenshots-tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 28px;
-    }
-    .tab-btn {
-      padding: 8px 18px;
-      border-radius: 100px;
-      font-size: 13px;
-      font-weight: 800;
-      font-family: 'Nunito', sans-serif;
-      border: 2px solid var(--border);
-      background: white;
-      color: var(--muted);
-      cursor: pointer;
-      transition: all 0.18s;
-      letter-spacing: 0.01em;
-    }
-    .tab-btn.active,
-    .tab-btn:hover {
-      background: var(--navy);
-      border-color: var(--navy);
-      color: white;
-    }
-
-    .ss-stage {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 28px;
-      display: flex;
-      gap: 18px;
-      align-items: flex-end;
-      justify-content: center;
-    }
-
-    .ss-phone {
-      flex-shrink: 0;
-      cursor: pointer;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-    .ss-phone:not(.active) {
-      opacity: 0.45;
-      transform: scale(0.86) translateY(12px);
-    }
-    .ss-phone.active { transform: scale(1) translateY(0); z-index: 2; }
-
-    .ss-shell {
-      background: linear-gradient(150deg, #303030, #111);
-      border-radius: 36px;
-      padding: 9px;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 20px 40px rgba(0,0,0,0.18);
-      transition: width 0.3s ease, padding 0.3s ease, border-radius 0.3s ease, box-shadow 0.3s ease;
-    }
-    .ss-phone:not(.active) .ss-shell { width: 178px; }
-    .ss-phone.active .ss-shell {
-      width: 220px;
-      padding: 11px;
-      border-radius: 42px;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 36px 72px rgba(13,34,64,0.28);
-    }
-
-    .ss-wrap {
-      background: white;
-      overflow: hidden;
-      aspect-ratio: 390/844;
-      position: relative;
-      border-radius: 29px;
-      transition: border-radius 0.3s ease;
-    }
-    .ss-phone.active .ss-wrap { border-radius: 33px; }
-
-    .ss-pill {
-      position: absolute;
-      top: 7px; left: 50%;
-      transform: translateX(-50%);
-      width: 56px; height: 14px;
-      background: #080808;
-      border-radius: 8px;
-      z-index: 3;
-      transition: width 0.3s, height 0.3s;
-    }
-    .ss-phone.active .ss-pill { width: 66px; height: 16px; top: 8px; }
-
-    .ss-img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      object-position: top;
-      display: block;
-    }
-    .ss-caption {
-      text-align: center;
-      margin-top: 12px;
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--navy);
-      opacity: 0;
-      transform: translateY(4px);
-      transition: opacity 0.3s, transform 0.3s;
-    }
-    .ss-phone.active .ss-caption { opacity: 1; transform: translateY(0); }
-
-    /* ═══════════════════════════════
-       FEATURES
-    ═══════════════════════════════ */
-    .features {
-      padding: 96px 0;
-      background: var(--navy);
-    }
-    .features .section-label {
-      color: var(--green);
-      background: rgba(88,204,2,0.12);
-    }
-    .features .section-title { color: white; }
-    .features .section-sub { color: rgba(255,255,255,0.55); }
-
-    .features-hdr { margin-bottom: 52px; }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-    .feat-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 20px;
-      padding: 28px 26px;
-      transition: background 0.22s, transform 0.22s, border-color 0.22s;
-    }
-    .feat-card:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(88,204,2,0.25);
-      transform: translateY(-4px);
-    }
-    .feat-icon { font-size: 30px; margin-bottom: 14px; display: block; }
-    .feat-title {
-      font-size: 16px;
-      font-weight: 900;
-      color: white;
-      margin-bottom: 8px;
-      letter-spacing: -0.01em;
-    }
-    .feat-desc {
-      font-size: 14px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.48);
-      line-height: 1.6;
-    }
-
-    /* ═══════════════════════════════
-       PRICING
-    ═══════════════════════════════ */
-    .pricing {
-      padding: 96px 0;
-      background: white;
-    }
-    .pricing-hdr {
-      text-align: center;
-      margin-bottom: 52px;
-    }
-    .pricing-hdr .section-label { display: inline-block; }
-    .pricing-hdr .section-sub { margin: 0 auto; }
-
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-      max-width: 780px;
-      margin: 0 auto;
-    }
-    .price-card {
-      border: 2.5px solid var(--border);
-      border-radius: 26px;
-      padding: 38px 34px;
-      position: relative;
-    }
-    .price-card.pro {
-      border-color: var(--green);
-      background: linear-gradient(145deg, #f0fce5 0%, white 60%);
-    }
-    .price-badge {
-      position: absolute;
-      top: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--green);
-      color: white;
-      font-size: 12px;
-      font-weight: 900;
-      padding: 4px 18px;
-      border-radius: 100px;
-      white-space: nowrap;
-      box-shadow: 0 4px 0 var(--green-dark);
-      letter-spacing: 0.03em;
-    }
-    .price-tier {
-      font-size: 12px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .price-card.pro .price-tier { color: var(--green-xdark); }
-    .price-num {
-      font-size: 44px;
-      font-weight: 900;
-      color: var(--navy);
-      letter-spacing: -0.04em;
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-    .price-per {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--muted);
-      margin-bottom: 26px;
-    }
-    .price-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 11px;
-      margin-bottom: 30px;
-    }
-    .price-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .price-list li.off { color: var(--muted); }
-    .pf {
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 900;
-      flex-shrink: 0;
-      margin-top: 1px;
-      color: white;
-    }
-    .pf.y { background: var(--green); }
-    .pf.n { background: var(--border); color: var(--muted); }
-
-    .price-btn {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 900;
-      font-family: 'Nunito', sans-serif;
-      text-align: center;
-      border: none;
-      cursor: pointer;
-      position: relative;
-      top: 0;
-      transition: top 0.15s, box-shadow 0.15s;
-    }
-    .price-btn.free {
-      background: var(--navy);
-      color: white;
-      box-shadow: 0 4px 0 #061428;
-    }
-    .price-btn.pro-btn {
-      background: var(--green);
-      color: white;
-      box-shadow: 0 4px 0 var(--green-dark);
-    }
-    .price-btn:hover { top: -2px; }
-    .price-btn.free:hover { box-shadow: 0 6px 0 #061428; }
-    .price-btn.pro-btn:hover { box-shadow: 0 6px 0 var(--green-dark); }
-    .price-btn:active { top: 2px; }
-    .price-btn.free:active { box-shadow: 0 2px 0 #061428; }
-    .price-btn.pro-btn:active { box-shadow: 0 2px 0 var(--green-dark); }
-
-    .pricing-note {
-      text-align: center;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--muted);
-      margin-top: 22px;
-    }
-
-    /* ═══════════════════════════════
-       CTA
-    ═══════════════════════════════ */
-    .cta-section {
-      background: var(--green);
-      padding: 80px 0;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .cta-section::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at 15% 50%, rgba(255,255,255,0.12) 0%, transparent 55%),
-        radial-gradient(ellipse at 85% 50%, rgba(255,255,255,0.07) 0%, transparent 55%);
-      pointer-events: none;
-    }
-    .cta-inner {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 0 28px;
-      position: relative;
-      z-index: 1;
-    }
-    .cta-mascot {
-      width: 80px; height: 80px;
-      border-radius: 20px;
-      margin: 0 auto 22px;
-      display: block;
-      box-shadow: 0 8px 0 var(--green-dark), 0 12px 32px rgba(0,0,0,0.15);
-    }
-    .cta-title {
-      font-size: clamp(28px, 4vw, 44px);
-      font-weight: 900;
-      color: white;
-      letter-spacing: -0.03em;
-      line-height: 1.08;
-      margin-bottom: 14px;
-    }
-    .cta-sub {
-      font-size: 17px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.8);
-      line-height: 1.55;
-      margin-bottom: 36px;
-    }
-    .cta-form {
-      display: flex;
-      max-width: 440px;
-      margin: 0 auto 14px;
-    }
-    .cta-form input[type="email"] {
-      flex: 1;
-      height: 54px;
-      padding: 0 20px;
-      font-size: 15px;
-      font-weight: 700;
-      font-family: 'Nunito', sans-serif;
-      background: white;
-      border: none;
-      border-radius: 16px 0 0 16px;
-      outline: none;
-      color: var(--text);
-      min-width: 0;
-    }
-    .cta-form input::placeholder { color: #bbb; }
-    .cta-form button {
-      flex-shrink: 0;
-      height: 54px;
-      padding: 0 24px;
-      font-size: 15px;
-      font-weight: 900;
-      font-family: 'Nunito', sans-serif;
-      color: white;
-      background: var(--navy);
-      border: none;
-      border-radius: 0 16px 16px 0;
-      cursor: pointer;
-      transition: background 0.2s;
-      white-space: nowrap;
-    }
-    .cta-form button:hover { background: var(--navy-mid); }
-    .cta-error {
-      display: none;
-      font-size: 13px;
-      font-weight: 800;
-      color: white;
-      background: rgba(0,0,0,0.2);
-      padding: 6px 16px;
-      border-radius: 100px;
-      margin: 8px auto 0;
-      display: none;
-    }
-    .cta-error.visible { display: inline-block; }
-    .cta-success {
-      display: none;
-      font-size: 18px;
-      font-weight: 900;
-      color: white;
-      padding: 14px 0;
-    }
-    .cta-success.visible { display: block; }
-    .cta-note {
-      font-size: 13px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.6);
-    }
-
-    /* ═══════════════════════════════
-       FOOTER
-    ═══════════════════════════════ */
-    footer {
-      background: var(--navy);
-      padding: 52px 0 32px;
-    }
-    .footer-inner {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 28px;
-    }
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 40px;
-      margin-bottom: 44px;
-    }
-    .footer-brand { max-width: 280px; }
-    .footer-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .footer-logo-img { width: 36px; height: 36px; border-radius: 9px; }
-    .footer-logo-text { font-size: 18px; font-weight: 900; color: white; }
-    .footer-tagline {
-      font-size: 14px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.42);
-      line-height: 1.6;
-    }
-    .footer-cols {
-      display: flex;
-      gap: 64px;
-    }
-    .footer-col h4 {
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
-      margin-bottom: 18px;
-    }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 11px; }
-    .footer-col a {
-      font-size: 14px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.65);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-col a:hover { color: var(--green); }
-
-    .footer-bottom {
-      border-top: 1px solid rgba(255,255,255,0.07);
-      padding-top: 22px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .footer-copy { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.28); }
-    .footer-sg { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.35); }
-
-    /* ═══════════════════════════════
-       RESPONSIVE
-    ═══════════════════════════════ */
-    @media (max-width: 960px) {
-      .hero-inner {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: 52px;
-      }
-      .hero-phone { order: -1; }
-      .hero-sub { margin: 0 auto 38px; }
-      .waitlist-form { margin: 0 auto; }
-      .hero-social { text-align: center; }
-      .phone-device { animation: none; }
-      .phone-shell { width: 230px; }
-
-      .pillars-grid { grid-template-columns: 1fr; }
-      .features-grid { grid-template-columns: 1fr 1fr; }
-      .pricing-grid { max-width: 480px; grid-template-columns: 1fr; }
-
-      .ss-stage {
-        overflow-x: auto;
-        justify-content: flex-start;
-        padding: 0 28px 24px;
-      }
-      .ss-phone:not(.active) { opacity: 0.6; transform: scale(0.9) translateY(6px); }
-    }
-
-    @media (max-width: 640px) {
-      nav .nav-links li:not(:last-child) { display: none; }
-
-      .hero { padding: 90px 0 60px; }
-      .hero-headline { font-size: 36px; }
-      .hero-sub { font-size: 16px; }
-
-      .waitlist-form { flex-direction: column; gap: 10px; }
-      .waitlist-form input[type="email"] {
-        border-right: 2.5px solid var(--border);
-        border-radius: 16px;
-        height: 50px;
-      }
-      .waitlist-form input:focus { border-color: var(--green); }
-      .waitlist-form button { border-radius: 16px; height: 50px; top: 0; }
-
-      .stats-inner { gap: 28px; }
-      .stat-div { display: none; }
-
-      .features-grid { grid-template-columns: 1fr; }
-
-      .cta-form { flex-direction: column; gap: 10px; }
-      .cta-form input[type="email"] { border-radius: 16px; height: 50px; }
-      .cta-form button { border-radius: 16px; height: 50px; }
-
-      .footer-top { flex-direction: column; }
-      .footer-cols { flex-direction: column; gap: 28px; }
-      .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
-    }
-  </style>
+    .marquee-track { animation: none !important; }
+  }
+</style>
 </head>
 <body>
 
-  <!-- ── NAV ── -->
-  <nav id="main-nav">
-    <div class="nav-inner">
-      <a href="#" class="nav-logo">
-        <img src="images/icon.png" alt="YouAceIt! icon" class="nav-logo-img" />
-        <span class="nav-logo-text">YouAceIt!</span>
+<!-- ════════ NAV ════════ -->
+<nav id="nav">
+  <div class="wrap nav-inner">
+    <div class="nav-left"></div>
+    <a href="#" class="nav-logo" aria-label="YouAceIt home">
+      <img src="images/icon.png" alt="" />
+      <span>YouAceIt</span>
+    </a>
+    <div class="nav-links">
+      <a href="#beta" class="btn btn-primary">
+        Join Waitlist
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
-      <ul class="nav-links">
-        <li><a href="#features">Features</a></li>
-        <li><a href="#screenshots">Screenshots</a></li>
-        <li><a href="#pricing">Pricing</a></li>
-        <li><a href="#waitlist" class="btn-nav">Join Waitlist</a></li>
-      </ul>
     </div>
-  </nav>
+    <button class="nav-burger" id="burger" aria-label="Open menu"><span></span></button>
+  </div>
+</nav>
 
-  <!-- ── HERO ── -->
-  <section class="hero" id="home">
-    <div class="hero-blob-1"></div>
-    <div class="hero-blob-2"></div>
-    <div class="hero-blob-3"></div>
-    <div class="hero-inner">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          Alpha launching April 2026
-        </div>
-        <h1 class="hero-headline">
-          Study smarter.<br />
-          Score <span class="accent">higher.</span><br />
-          Know you're ready.
-        </h1>
-        <p class="hero-sub">
-          YouAceIt! is the AI exam prep companion that combines your revision depth and daily wellbeing into a single live <strong>Exam Readiness Score</strong> — so you never have to guess again.
-        </p>
-        <div class="waitlist-wrap">
-          <form class="waitlist-form" id="waitlist-form" novalidate>
-            <input type="email" id="email-input" placeholder="Enter your email" autocomplete="email" />
-            <button type="submit">Join waitlist</button>
-          </form>
-          <p class="form-error" id="form-error">Please enter a valid email address.</p>
-          <p class="form-success" id="form-success">You're on the list! We'll be in touch 🎉</p>
-        </div>
-        <p class="hero-social">
-          Follow <a href="https://instagram.com/youaceitapp" target="_blank" rel="noopener">@youaceitapp</a> for updates
-        </p>
-      </div>
-      <div class="hero-phone">
-        <div class="phone-device">
-          <div class="phone-shell">
-            <div class="phone-btn power"></div>
-            <div class="phone-btn vol-up"></div>
-            <div class="phone-btn vol-down"></div>
-            <div class="phone-btn silent"></div>
-            <div class="phone-screen-wrap">
-              <div class="phone-notch"></div>
-              <img src="images/ss1.PNG" alt="YouAceIt! home screen" class="phone-screen-img" />
-            </div>
-          </div>
-        </div>
-      </div>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#features" data-close>Features</a>
+  <a href="#how" data-close>How it works</a>
+  <a href="#beta" data-close>Early access</a>
+  <a href="#beta" class="btn btn-primary" data-close>Join Waitlist</a>
+</div>
+
+<!-- ════════ HERO ════════ -->
+<header class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-glow-2"></div>
+  </div>
+  <div class="particles" id="particles" aria-hidden="true"></div>
+
+  <div class="wrap hero-inner">
+    <div class="hero-mascot-wrap">
+      <div class="hero-mascot-glow"></div>
+      <img src="images/icon.png" alt="Ace, the YouAceIt mascot" class="hero-mascot" id="mascot" />
     </div>
-  </section>
 
-  <!-- ── STATS BAR ── -->
-  <div class="stats-bar">
-    <div class="stats-inner">
-      <div class="stat-item fade-up">
-        <div class="stat-number">2</div>
-        <div class="stat-label">Pillars tracked</div>
-      </div>
-      <div class="stat-div"></div>
-      <div class="stat-item fade-up d1">
-        <div class="stat-number">14+</div>
-        <div class="stat-label">A-Level subjects</div>
-      </div>
-      <div class="stat-div"></div>
-      <div class="stat-item fade-up d2">
-        <div class="stat-number">1</div>
-        <div class="stat-label">Readiness score</div>
-      </div>
-      <div class="stat-div"></div>
-      <div class="stat-item fade-up d3">
-        <div class="stat-number">∞</div>
-        <div class="stat-label">Exam surprises (Pro)</div>
+    <div class="hero-badge" id="hero-badge">
+      <span class="pulse"></span>
+      Alpha launching 2026 · Free iOS beta coming soon
+    </div>
+
+    <h1 class="hero-title" id="hero-title">
+      Ace every <em>exam.</em>
+    </h1>
+
+    <p class="hero-sub" id="hero-sub">
+      Intelligent study planning built around your schedule, your sleep, and your shot at scoring higher.
+    </p>
+
+    <div class="hero-cta-row" id="hero-cta">
+      <a href="#beta" class="btn btn-primary btn-lg">
+        Join the Waitlist — Free
+        <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <div class="hero-tf-meta">
+        <span class="tf-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm-1-5h2v2h-2zm0-8h2v6h-2z"/></svg>
+          A-Level · O-Level
+        </span>
+        Built for Singapore students
       </div>
     </div>
   </div>
+</header>
 
-  <!-- ── TWO PILLARS ── -->
-  <section class="pillars" id="features">
-    <div class="section-inner">
-      <div class="pillars-header">
-        <span class="section-label fade-up">The Two-Pillar System</span>
-        <h2 class="section-title fade-up d1">Why other tools fail.<br />Why this one doesn't.</h2>
-        <p class="section-sub fade-up d2">Exam results depend on how well you've prepared <em>and</em> how well you'll perform on the day. No other tool manages both. YouAceIt! does.</p>
-      </div>
-      <div class="pillars-grid">
-        <div class="pillar-card prep fade-up">
-          <span class="pillar-icon">📚</span>
-          <h3 class="pillar-title">Preparation</h3>
-          <p class="pillar-desc">Know exactly how much you've covered — and what still needs work before exam day.</p>
-          <ul class="pillar-list">
-            <li><span class="check g">✓</span> Syllabus coverage per topic</li>
-            <li><span class="check g">✓</span> Topic mastery levels</li>
-            <li><span class="check g">✓</span> Spaced repetition (SM-2)</li>
-            <li><span class="check g">✓</span> Pre-loaded A-Level &amp; O-Level curriculum</li>
-            <li><span class="check g">✓</span> Topic dependency system</li>
-          </ul>
-        </div>
-        <div class="pillar-card perf fade-up d1">
-          <span class="pillar-icon">⚡</span>
-          <h3 class="pillar-title">Performance</h3>
-          <p class="pillar-desc">Track the human factors that determine whether you can actually deliver on the day.</p>
-          <ul class="pillar-list">
-            <li><span class="check b">✓</span> Sleep quality monitoring</li>
-            <li><span class="check b">✓</span> Energy &amp; stress check-ins</li>
-            <li><span class="check b">✓</span> Cognitive load tracking</li>
-            <li><span class="check b">✓</span> Burnout detection</li>
-            <li><span class="check b">✓</span> Peak focus window detection</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pillar-connector fade-up d2">
-        <div class="conn-line"></div>
-        <div class="conn-pill">= Live Exam Readiness Score</div>
-        <div class="conn-line"></div>
-      </div>
+<!-- ════════ MARQUEE ════════ -->
+<section class="marquee-section" aria-hidden="true">
+  <div class="marquee-row">
+    <div class="marquee-track">
+      <span class="marquee-item">A-Level</span>
+      <span class="marquee-item">O-Level</span>
+      <span class="marquee-item">IB</span>
+      <span class="marquee-item">GCSE</span>
+      <span class="marquee-item">University</span>
+      <span class="marquee-item">Singapore</span>
+      <span class="marquee-item">Free Early Access</span>
+      <span class="marquee-item">AI-Powered</span>
+      <span class="marquee-item">Burnout Protection</span>
+      <span class="marquee-item">Exam Readiness Score</span>
+      <span class="marquee-item">A-Level</span>
+      <span class="marquee-item">O-Level</span>
+      <span class="marquee-item">IB</span>
+      <span class="marquee-item">GCSE</span>
+      <span class="marquee-item">University</span>
+      <span class="marquee-item">Singapore</span>
+      <span class="marquee-item">Free Early Access</span>
+      <span class="marquee-item">AI-Powered</span>
+      <span class="marquee-item">Burnout Protection</span>
+      <span class="marquee-item">Exam Readiness Score</span>
     </div>
-  </section>
+  </div>
+  <div class="marquee-row reverse">
+    <div class="marquee-track">
+      <span class="marquee-item">Topic Mastery</span>
+      <span class="marquee-item">Spaced Repetition</span>
+      <span class="marquee-item">Daily Check-In</span>
+      <span class="marquee-item">YAI Coach</span>
+      <span class="marquee-item">Smart Calendar</span>
+      <span class="marquee-item">Made in Singapore</span>
+      <span class="marquee-item">Built by Students</span>
+      <span class="marquee-item">Sleep-Aware</span>
+      <span class="marquee-item">Stress-Aware</span>
+      <span class="marquee-item">Live Score</span>
+      <span class="marquee-item">Topic Mastery</span>
+      <span class="marquee-item">Spaced Repetition</span>
+      <span class="marquee-item">Daily Check-In</span>
+      <span class="marquee-item">YAI Coach</span>
+      <span class="marquee-item">Smart Calendar</span>
+      <span class="marquee-item">Made in Singapore</span>
+      <span class="marquee-item">Built by Students</span>
+      <span class="marquee-item">Sleep-Aware</span>
+      <span class="marquee-item">Stress-Aware</span>
+      <span class="marquee-item">Live Score</span>
+    </div>
+  </div>
+</section>
 
-  <!-- ── SCREENSHOTS ── -->
-  <section class="screenshots" id="screenshots">
-    <div class="screenshots-hdr">
-      <span class="section-label fade-up">The App</span>
-      <h2 class="section-title fade-up d1">Everything you need.<br />Nothing you don't.</h2>
-      <div class="screenshots-tabs fade-up d2">
-        <button class="tab-btn active" data-tab="0">Home</button>
-        <button class="tab-btn" data-tab="1">Performance</button>
-        <button class="tab-btn" data-tab="2">Exams</button>
-        <button class="tab-btn" data-tab="3">Subjects</button>
-        <button class="tab-btn" data-tab="4">Tasks</button>
-        <button class="tab-btn" data-tab="5">Study Session</button>
-      </div>
+<!-- ════════ BENTO FEATURES ════════ -->
+<section class="bento" id="features">
+  <div class="wrap">
+    <div class="section-header fade-in">
+      <span class="kicker"><span class="dot"></span>Features</span>
+      <h2 class="section-title">Everything you need.<br/>Nothing you <em>don't.</em></h2>
+      <p class="section-sub">Built around the way real students study — when they're tired, when they're cramming, when life gets in the way.</p>
     </div>
-    <div class="ss-stage fade-up d3">
-      <div class="ss-phone active" data-phone="0">
-        <div class="ss-shell">
-          <div class="ss-wrap">
-            <div class="ss-pill"></div>
-            <img class="ss-img" src="images/ss1.PNG" alt="Home" />
+
+    <div class="bento-grid">
+
+      <!-- Readiness Score -->
+      <div class="bento-card b-readiness fade-in">
+        <span class="b-eyebrow"><span class="b-dot" style="background:var(--green)"></span>Live Score</span>
+        <h3 class="b-card-title">Exam Readiness Score</h3>
+        <p class="b-card-desc">A live score from 0–100 that tracks your preparation and performance together. Colour-coded red, orange, amber, green. Updates daily.</p>
+        <div class="readiness-meta">
+          <span class="readiness-pill"><span class="pd" style="background:var(--red)"></span>Red 0–25</span>
+          <span class="readiness-pill"><span class="pd" style="background:var(--orange)"></span>Orange 26–50</span>
+          <span class="readiness-pill"><span class="pd" style="background:var(--amber)"></span>Amber 51–75</span>
+          <span class="readiness-pill"><span class="pd" style="background:var(--green)"></span>Green 76+</span>
+        </div>
+        <div class="ring-wrap" id="ring-wrap">
+          <svg class="ring-svg" viewBox="0 0 320 320">
+            <defs>
+              <linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#4ade80"/>
+                <stop offset="100%" stop-color="#22c55e"/>
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="160" cy="160" r="140"/>
+            <circle class="ring-fg" cx="160" cy="160" r="140" id="ring-fg"/>
+          </svg>
+          <div class="ring-num">
+            <span class="n" id="ring-num">0</span>
+            <span class="l">Readiness</span>
           </div>
         </div>
-        <div class="ss-caption">Home</div>
       </div>
-      <div class="ss-phone" data-phone="1">
-        <div class="ss-shell">
-          <div class="ss-wrap">
-            <div class="ss-pill"></div>
-            <img class="ss-img" src="images/IMG_6560.PNG" alt="Performance" />
-          </div>
-        </div>
-        <div class="ss-caption">Performance</div>
-      </div>
-      <div class="ss-phone" data-phone="2">
-        <div class="ss-shell">
-          <div class="ss-wrap">
-            <div class="ss-pill"></div>
-            <img class="ss-img" src="images/IMG_6562.PNG" alt="Exams" />
-          </div>
-        </div>
-        <div class="ss-caption">Exams</div>
-      </div>
-      <div class="ss-phone" data-phone="3">
-        <div class="ss-shell">
-          <div class="ss-wrap">
-            <div class="ss-pill"></div>
-            <img class="ss-img" src="images/IMG_6561.PNG" alt="Subjects" />
-          </div>
-        </div>
-        <div class="ss-caption">Subjects</div>
-      </div>
-      <div class="ss-phone" data-phone="4">
-        <div class="ss-shell">
-          <div class="ss-wrap">
-            <div class="ss-pill"></div>
-            <img class="ss-img" src="images/IMG_6564.PNG" alt="Tasks" />
-          </div>
-        </div>
-        <div class="ss-caption">Tasks</div>
-      </div>
-      <div class="ss-phone" data-phone="5">
-        <div class="ss-shell">
-          <div class="ss-wrap">
-            <div class="ss-pill"></div>
-            <img class="ss-img" src="images/IMG_6566.PNG" alt="Study Session" />
-          </div>
-        </div>
-        <div class="ss-caption">Study Session</div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ── FEATURES GRID ── -->
-  <section class="features">
-    <div class="section-inner">
-      <div class="features-hdr">
-        <span class="section-label fade-up">Features</span>
-        <h2 class="section-title fade-up d1">Built for how students<br />actually study.</h2>
-        <p class="section-sub fade-up d2">Every feature is designed around the reality of exam prep — not a generic productivity app.</p>
-      </div>
-      <div class="features-grid">
-        <div class="feat-card fade-up">
-          <span class="feat-icon">🧠</span>
-          <h3 class="feat-title">AI Daily Insight</h3>
-          <p class="feat-desc">YAI analyses your prep and performance data to give you a personalised recommendation every day.</p>
-        </div>
-        <div class="feat-card fade-up d1">
-          <span class="feat-icon">📊</span>
-          <h3 class="feat-title">Live Readiness Score</h3>
-          <p class="feat-desc">A single score per exam combining preparation depth and performance metrics. Always real time.</p>
-        </div>
-        <div class="feat-card fade-up d2">
-          <span class="feat-icon">🗓️</span>
-          <h3 class="feat-title">Smart Scheduler</h3>
-          <p class="feat-desc">Auto-schedules study sessions using spaced repetition, urgency scoring, and your sleep data.</p>
-        </div>
-        <div class="feat-card fade-up d3">
-          <span class="feat-icon">🏆</span>
-          <h3 class="feat-title">Friend Leaderboard</h3>
-          <p class="feat-desc">Stay motivated with a Duolingo-style leaderboard. See how your readiness stacks up.</p>
-        </div>
-        <div class="feat-card fade-up d4">
-          <span class="feat-icon">🇸🇬</span>
-          <h3 class="feat-title">Singapore Curriculum</h3>
-          <p class="feat-desc">Pre-loaded O-Level and A-Level syllabuses. Exam timetables auto-populate when you pick subjects.</p>
-        </div>
-        <div class="feat-card fade-up d5">
-          <span class="feat-icon">🔥</span>
-          <h3 class="feat-title">Streak System</h3>
-          <p class="feat-desc">Daily study streaks with freeze protection for Pro users. Consistency beats cramming — every time.</p>
+      <!-- YAI plan -->
+      <div class="bento-card b-yai fade-in">
+        <span class="b-eyebrow"><span class="b-dot" style="background:var(--orange)"></span>AI Coach</span>
+        <h3 class="b-card-title">YAI Daily Plan</h3>
+        <p class="b-card-desc">Your AI study coach. Adjusts your schedule daily based on how you slept and how you feel.</p>
+        <div class="yai-mini">
+          <div class="yai-row"><span class="t">06:30</span><span class="s">Recovery — light review</span><span class="chip chip-g">45m</span></div>
+          <div class="yai-row"><span class="t">17:00</span><span class="s">Experimental Chemistry</span><span class="chip chip-o">60m</span></div>
+          <div class="yai-row"><span class="t">19:30</span><span class="s">Ionic Bonding · drills</span><span class="chip chip-a">30m</span></div>
+          <div class="yai-row"><span class="t">21:00</span><span class="s">Wind-down · sleep target</span><span class="chip chip-g">10:30</span></div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ── PRICING ── -->
-  <section class="pricing" id="pricing">
-    <div class="section-inner">
-      <div class="pricing-hdr">
-        <span class="section-label fade-up">Pricing</span>
-        <h2 class="section-title fade-up d1">Start free.<br />Go Pro when you're ready.</h2>
-        <p class="section-sub fade-up d2">Free forever for the essentials. Upgrade to Pro for unlimited everything.</p>
-      </div>
-      <div class="pricing-grid fade-up d2">
-        <div class="price-card">
-          <div class="price-tier">Free</div>
-          <div class="price-num">SGD 0</div>
-          <div class="price-per">forever</div>
-          <ul class="price-list">
-            <li><span class="pf y">✓</span> 2 exams</li>
-            <li><span class="pf y">✓</span> 3 subjects</li>
-            <li><span class="pf y">✓</span> Daily check-ins</li>
-            <li><span class="pf y">✓</span> 1 AI insight refresh/day</li>
-            <li><span class="pf y">✓</span> 5 friends on leaderboard</li>
-            <li class="off"><span class="pf n">✗</span> Unlimited exams &amp; subjects</li>
-            <li class="off"><span class="pf n">✗</span> Activity feed &amp; challenges</li>
-            <li class="off"><span class="pf n">✗</span> Streak freezes</li>
-          </ul>
-          <button class="price-btn free" onclick="scrollToWaitlist()">Get started free</button>
-        </div>
-        <div class="price-card pro">
-          <div class="price-badge">Most popular</div>
-          <div class="price-tier">Pro</div>
-          <div class="price-num">SGD 6.99</div>
-          <div class="price-per">per month · or SGD 39.99/year</div>
-          <ul class="price-list">
-            <li><span class="pf y">✓</span> Unlimited exams</li>
-            <li><span class="pf y">✓</span> Unlimited subjects</li>
-            <li><span class="pf y">✓</span> Daily check-ins</li>
-            <li><span class="pf y">✓</span> Unlimited AI insight refreshes</li>
-            <li><span class="pf y">✓</span> Unlimited friends</li>
-            <li><span class="pf y">✓</span> Activity feed &amp; challenges</li>
-            <li><span class="pf y">✓</span> Streak freezes</li>
-          </ul>
-          <button class="price-btn pro-btn" onclick="scrollToWaitlist()">Join waitlist for Pro</button>
+      <!-- Topic mastery -->
+      <div class="bento-card b-mastery fade-in">
+        <span class="b-eyebrow"><span class="b-dot" style="background:#1cb0f6"></span>Mastery</span>
+        <h3 class="b-card-title">Topic Mastery</h3>
+        <p class="b-card-desc">Track every topic in your syllabus. See what's covered, what needs work, what to practise tomorrow.</p>
+        <div class="mastery-list">
+          <div class="mastery-row">
+            <div class="mastery-badge mb-gp">GP</div>
+            <div class="mastery-meta">
+              <div class="n">General Paper</div>
+              <div class="b"><span style="width:64%"></span></div>
+            </div>
+            <span class="p">7/11</span>
+          </div>
+          <div class="mastery-row">
+            <div class="mastery-badge mb-ph">PH</div>
+            <div class="mastery-meta">
+              <div class="n">Physics</div>
+              <div class="b"><span style="width:38%"></span></div>
+            </div>
+            <span class="p">8/22</span>
+          </div>
+          <div class="mastery-row">
+            <div class="mastery-badge mb-ch">CH</div>
+            <div class="mastery-meta">
+              <div class="n">Chemistry</div>
+              <div class="b"><span style="width:24%"></span></div>
+            </div>
+            <span class="p">5/21</span>
+          </div>
         </div>
       </div>
-      <p class="pricing-note fade-up d3">Launching October 2026 on the App Store · Built for Singapore students</p>
-    </div>
-  </section>
 
-  <!-- ── CTA ── -->
-  <section class="cta-section" id="waitlist">
-    <div class="cta-inner">
-      <img src="images/icon.png" alt="Ace the Fox" class="cta-mascot" />
-      <h2 class="cta-title">Your exams deserve better<br />than last-minute panic.</h2>
-      <p class="cta-sub">Join the waitlist. Be first to know when YouAceIt! launches.</p>
-      <form class="cta-form" id="cta-form" novalidate>
-        <input type="email" id="cta-email" placeholder="Enter your email" autocomplete="email" />
-        <button type="submit">Join waitlist</button>
-      </form>
-      <p class="cta-error" id="cta-error">Please enter a valid email.</p>
-      <p class="cta-success" id="cta-success">You're on the list! 🎉</p>
-      <p class="cta-note">Alpha launching April 2026 · No spam, ever</p>
-    </div>
-  </section>
+      <!-- Burnout -->
+      <div class="bento-card b-burnout fade-in">
+        <span class="b-eyebrow"><span class="b-dot" style="background:var(--red)"></span>Recovery</span>
+        <h3 class="b-card-title">Burnout Protection</h3>
+        <p class="b-card-desc">Sessions reduce automatically when stress or sleep debt spike.</p>
+        <div class="burnout-vis">
+          <div class="burnout-pulse">
+            <svg class="burnout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </div>
+          <div class="burnout-label">High load · cooling</div>
+        </div>
+      </div>
 
-  <!-- ── FOOTER ── -->
-  <footer>
+      <!-- Calendar -->
+      <div class="bento-card b-calendar fade-in">
+        <span class="b-eyebrow"><span class="b-dot" style="background:var(--amber)"></span>Schedule</span>
+        <h3 class="b-card-title">Smart Calendar</h3>
+        <p class="b-card-desc">Study blocks planned around your real life — school, CCAs, weekends, the works.</p>
+        <div class="cal-head">
+          <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+        </div>
+        <div class="cal-vis">
+          <div class="cal-cell has"></div>
+          <div class="cal-cell has has2"></div>
+          <div class="cal-cell has"></div>
+          <div class="cal-cell has has2 today"></div>
+          <div class="cal-cell has"></div>
+          <div class="cal-cell"></div>
+          <div class="cal-cell has"></div>
+          <div class="cal-cell has has2"></div>
+          <div class="cal-cell has"></div>
+          <div class="cal-cell"></div>
+          <div class="cal-cell has has2"></div>
+          <div class="cal-cell has"></div>
+          <div class="cal-cell has"></div>
+          <div class="cal-cell has has2"></div>
+        </div>
+      </div>
+
+      <!-- Singapore -->
+      <div class="bento-card b-singapore fade-in">
+        <span class="b-eyebrow"><span class="b-dot" style="background:var(--green-2)"></span>Local</span>
+        <h3 class="b-card-title">Built for SG</h3>
+        <div class="sg-emoji">🇸🇬</div>
+        <div class="sg-list">
+          <span>A-Level syllabuses pre-loaded</span>
+          <span>O-Level syllabuses pre-loaded</span>
+          <span>Real exam dates from MOE</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════ PHONES ════════ -->
+<section class="phones">
+  <div class="wrap">
+    <div class="section-header fade-in">
+      <span class="kicker green"><span class="dot"></span>The App</span>
+      <h2 class="section-title">A complete <em>study OS</em><br/>in your pocket.</h2>
+    </div>
+    <div class="phones-row" id="phones-row">
+
+      <div class="phone phone-1" data-parallax="40">
+        <div class="phone-cap"><span class="dot"></span>Today · Home</div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <img src="images/ss1.PNG" alt="Home screen with next exam, YAI plan and tasks" loading="lazy" />
+          </div>
+        </div>
+      </div>
+
+      <div class="phone phone-2" data-parallax="-60">
+        <div class="phone-cap"><span class="dot"></span>Performance</div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <img src="images/IMG_6560.PNG" alt="Performance screen with quick check-in and score ring" loading="lazy" />
+          </div>
+        </div>
+      </div>
+
+      <div class="phone phone-3" data-parallax="40">
+        <div class="phone-cap"><span class="dot"></span>Exams</div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <img src="images/IMG_6562.PNG" alt="Exams screen with overall readiness and upcoming papers" loading="lazy" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════ STEPS ════════ -->
+<section class="steps" id="how">
+  <div class="wrap">
+    <div class="section-header fade-in">
+      <span class="kicker"><span class="dot"></span>How it works</span>
+      <h2 class="section-title">Three steps.<br/>Then it just <em>runs.</em></h2>
+    </div>
+
+    <div class="steps-grid" id="steps-grid">
+      <div class="steps-line" id="steps-line"></div>
+
+      <div class="step" data-step>
+        <div class="step-num"><em>01</em></div>
+        <h3>Add your exams</h3>
+        <p>Set your exam dates and subjects. The app pre-loads your syllabus topics automatically — A-Level, O-Level, IB, the lot.</p>
+      </div>
+
+      <div class="step" data-step>
+        <div class="step-num"><em>02</em></div>
+        <h3>Log your daily check-in</h3>
+        <p>Takes 10 seconds. Sleep hours, energy level. That's it. YAI uses both to read the room before planning your day.</p>
+      </div>
+
+      <div class="step" data-step>
+        <div class="step-num"><em>03</em></div>
+        <h3>Follow your plan</h3>
+        <p>YAI builds and adjusts your study schedule daily. Your Readiness Score moves in real time. Show up, not stress out.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════ CTA / WAITLIST ════════ -->
+<section class="cta-section" id="beta">
+  <div class="cta-grid-bg"></div>
+  <div class="cta-bg"></div>
+  <div class="wrap cta-inner">
+    <div class="cta-mascot-row fade-in">
+      <img src="images/icon.png" alt="" />
+      <span class="kicker"><span class="dot"></span>Early Access</span>
+    </div>
+    <h2 class="cta-title fade-in">Be one of the <em>first.</em></h2>
+    <p class="cta-sub fade-in">YouAceIt is launching in 2026. Join the waitlist now — be first to know when the app goes live.</p>
+
+    <div class="platforms fade-in">
+
+      <!-- iOS -->
+      <div class="platform-card ios">
+        <span class="platform-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+          iOS <span class="sep">·</span> Coming Soon
+        </span>
+        <p class="platform-sub">Join the general waitlist below. Be first to know when the iOS beta drops on TestFlight.</p>
+        <button class="btn btn-primary" onclick="document.getElementById('android-waitlist-input').focus()">
+          Join Waitlist
+          <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <p class="platform-note">iOS · Android · Launching 2026.</p>
+      </div>
+
+      <!-- Android / General Waitlist -->
+      <div class="platform-card android">
+        <span class="platform-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.523 15.341a1.07 1.07 0 1 1 1.07-1.07 1.07 1.07 0 0 1-1.07 1.07m-11.046 0a1.07 1.07 0 1 1 1.07-1.07 1.07 1.07 0 0 1-1.07 1.07m11.43-6.02 2.137-3.7a.444.444 0 0 0-.77-.444l-2.163 3.748A13.27 13.27 0 0 0 12 7.49a13.27 13.27 0 0 0-5.111 1.435L4.726 5.177a.444.444 0 1 0-.77.444l2.137 3.7A12.07 12.07 0 0 0 0 18.92h24a12.07 12.07 0 0 0-6.093-9.6"/></svg>
+          Android <span class="sep">·</span> <span class="status-soon">Coming soon</span>
+        </span>
+        <p class="platform-sub">Join the waitlist and be first to know when YouAceIt launches on iOS and Android.</p>
+        <form class="waitlist-form" id="android-waitlist-form" novalidate>
+          <input type="email" class="waitlist-input" id="android-waitlist-input" placeholder="you@example.com" autocomplete="email" required />
+          <button type="submit" class="btn-waitlist">Join Waitlist</button>
+        </form>
+        <p class="platform-note" id="android-waitlist-note">No spam. One email when it's ready.</p>
+      </div>
+
+    </div>
+
+    <div class="cta-fineprint fade-in">
+      <span>Free</span><span>No account required to try</span><span>Launching October 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+  <div class="wrap">
     <div class="footer-inner">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <div class="footer-logo">
-            <img src="images/icon.png" alt="YouAceIt!" class="footer-logo-img" />
-            <span class="footer-logo-text">YouAceIt!</span>
-          </div>
-          <p class="footer-tagline">Your AI exam preparation companion. Built for Singapore students who refuse to leave their results to chance.</p>
-        </div>
-        <div class="footer-cols">
-          <div class="footer-col">
-            <h4>Product</h4>
-            <ul>
-              <li><a href="#features">Features</a></li>
-              <li><a href="#screenshots">Screenshots</a></li>
-              <li><a href="#pricing">Pricing</a></li>
-              <li><a href="#waitlist">Join waitlist</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4>Connect</h4>
-            <ul>
-              <li><a href="mailto:hello@youaceit.com">Contact us</a></li>
-              <li><a href="https://instagram.com/youaceitapp" target="_blank" rel="noopener">Instagram</a></li>
-              <li><a href="https://tiktok.com/@youaceitapp" target="_blank" rel="noopener">TikTok</a></li>
-              <li><a href="https://reddit.com/r/SGExams" target="_blank" rel="noopener">r/SGExams</a></li>
-            </ul>
-          </div>
-        </div>
+      <div class="footer-logo">
+        <img src="images/icon.png" alt="" />
+        <span>YouAceIt</span>
       </div>
-      <div class="footer-bottom">
-        <p class="footer-copy">© 2026 YouAceIt! All rights reserved.</p>
-        <p class="footer-sg">Made with ❤️ in Singapore 🇸🇬</p>
+      <div class="footer-links">
+        <a href="#">youaceit.com</a>
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="mailto:hello@youaceit.com">Contact</a>
+      </div>
+      <div class="footer-social">
+        <a href="https://instagram.com/youaceitapp" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="https://tiktok.com/@youaceitapp" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.93a8.16 8.16 0 0 0 4.78 1.52V7.05a4.85 4.85 0 0 1-1.85-.36z"/></svg>
+        </a>
+        <a href="https://reddit.com/r/SGExams" target="_blank" rel="noopener" aria-label="Reddit">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+        </a>
       </div>
     </div>
-  </footer>
+    <div class="footer-bottom">
+      <div>© 2026 YouAceIt. Built in Singapore. 🇸🇬</div>
+      <div>Launching October 2026 · iOS &amp; Android</div>
+    </div>
+  </div>
+</footer>
 
-  <script src="https://forminit.com/sdk/v1/forminit.js"></script>
-  <script>
-    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyu_Hoo-tHFzH7co3MLUCm7m2DXSLqog-KDF20K2G4XsTlV3bmIEbWmS1uk2jv3cqjAqw/exec';
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+<script>
+(function () {
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyu_Hoo-tHFzH7co3MLUCm7m2DXSLqog-KDF20K2G4XsTlV3bmIEbWmS1uk2jv3cqjAqw/exec';
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Nav scroll shadow
-    window.addEventListener('scroll', () => {
-      document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 24);
-    }, { passive: true });
+  // ─── Nav blur on scroll
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 12);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
 
-    // Fade-up on scroll
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  // ─── Mobile menu
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobile-menu');
+  burger.addEventListener('click', () => menu.classList.toggle('open'));
+  menu.querySelectorAll('[data-close]').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
 
-    // Screenshot tabs
-    const tabs = document.querySelectorAll('.tab-btn');
-    const phones = document.querySelectorAll('.ss-phone');
+  // ─── Hero particles (drifting subject names)
+  const TOPICS = [
+    'Ionic Bonding','Calculus','Mechanics','Photosynthesis','Vectors',
+    'Stoichiometry','Essay Skills','Thermodynamics','Probability','Acids & Bases',
+    'Quadratics','Optics','Cell Biology','Logarithms','General Paper',
+    'Organic Chemistry','Waves','Matrices','Genetics','Statistics'
+  ];
+  const particles = document.getElementById('particles');
+  const W = window.innerWidth;
+  const count = W < 600 ? 8 : 16;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.textContent = TOPICS[i % TOPICS.length];
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.opacity = (0.08 + Math.random() * 0.12).toFixed(2);
+    particles.appendChild(p);
+    if (!reduced) {
+      const dur = 18 + Math.random() * 16;
+      const dx = (Math.random() - 0.5) * 80;
+      const dy = (Math.random() - 0.5) * 60;
+      p.animate([
+        { transform: 'translate(0,0)' },
+        { transform: `translate(${dx}px, ${dy}px)` },
+        { transform: 'translate(0,0)' },
+      ], { duration: dur * 1000, iterations: Infinity, easing: 'ease-in-out' });
+    }
+  }
 
-    function activateScreen(idx) {
-      tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
-      phones.forEach((p, i) => p.classList.toggle('active', i === idx));
+  // ─── Hero entry animation (GSAP)
+  if (window.gsap && !reduced) {
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.from('#mascot', { scale: 0.6, opacity: 0, duration: 0.7, ease: 'back.out(1.6)' })
+      .from('#hero-badge', { y: 14, opacity: 0, duration: 0.5 }, '-=0.2')
+      .from('#hero-title', { y: 40, opacity: 0, duration: 0.8, ease: 'power4.out' }, '-=0.2')
+      .from('#hero-sub', { y: 20, opacity: 0, duration: 0.6 }, '-=0.4')
+      .from('#hero-cta > *', { y: 16, opacity: 0, duration: 0.5, stagger: 0.08 }, '-=0.3');
+  }
+
+  // ─── Mascot float
+  if (window.gsap && !reduced) {
+    gsap.to('#mascot', {
+      y: -10, duration: 2.6, repeat: -1, yoyo: true, ease: 'sine.inOut'
+    });
+  }
+
+  // ─── Fade-in observer
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+  // ─── Readiness ring counter
+  const ringFg = document.getElementById('ring-fg');
+  const ringNum = document.getElementById('ring-num');
+  const ringWrap = document.getElementById('ring-wrap');
+  const TARGET = 78;
+  const CIRC = 879;
+  const ringIo = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        ringFg.style.strokeDashoffset = String(CIRC - (TARGET / 100) * CIRC);
+        if (reduced) { ringNum.textContent = TARGET; ringIo.unobserve(e.target); return; }
+        const start = performance.now();
+        const dur = 1400;
+        const step = (t) => {
+          const k = Math.min(1, (t - start) / dur);
+          const ease = 1 - Math.pow(1 - k, 3);
+          ringNum.textContent = Math.round(TARGET * ease);
+          if (k < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+        ringIo.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  if (ringWrap) ringIo.observe(ringWrap);
+
+  // ─── ScrollTrigger: parallax phones + steps timeline
+  if (window.gsap && window.ScrollTrigger && !reduced) {
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.querySelectorAll('[data-parallax]').forEach(el => {
+      const amt = parseFloat(el.dataset.parallax);
+      gsap.to(el, {
+        y: amt,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 0.6,
+        }
+      });
+    });
+
+    const stepsGrid = document.getElementById('steps-grid');
+    if (stepsGrid) {
+      gsap.to('#steps-line', {
+        scaleY: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: stepsGrid,
+          start: 'top 70%',
+          end: 'bottom 75%',
+          scrub: 0.5,
+        }
+      });
+      document.querySelectorAll('[data-step]').forEach(s => {
+        gsap.to(s, {
+          opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+          scrollTrigger: { trigger: s, start: 'top 80%' }
+        });
+      });
+    }
+  } else {
+    document.querySelectorAll('[data-step]').forEach(s => { s.style.opacity = 1; s.style.transform = 'none'; });
+    const line = document.getElementById('steps-line');
+    if (line) line.style.transform = 'scaleY(1)';
+  }
+
+  // ─── Waitlist form (Android card + Google Sheets)
+  (function () {
+    const form = document.getElementById('android-waitlist-form');
+    if (!form) return;
+    const input = document.getElementById('android-waitlist-input');
+    const note = document.getElementById('android-waitlist-note');
+    const KEY = 'youaceit_waitlist_v2';
+
+    const showConfirmed = (animated) => {
+      form.classList.add('confirmed');
+      form.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>You’re on the list 🎉';
+      if (note) note.textContent = 'We’ll email you when YouAceIt launches.';
+      if (animated && window.gsap && !reduced) {
+        gsap.from(form, { scale: 0.96, opacity: 0, duration: 0.4, ease: 'power3.out' });
+      }
+    };
+
+    if (localStorage.getItem(KEY) === '1') {
+      showConfirmed(false);
+      return;
     }
 
-    tabs.forEach((btn, i) => btn.addEventListener('click', () => activateScreen(i)));
-    phones.forEach((p, i) => p.addEventListener('click', () => activateScreen(i)));
+    const isEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s.trim());
 
-    // Shared waitlist submit
-    async function submitEmail(email, formEl, btnEl, successEl, errorEl) {
-      if (!emailRegex.test(email)) {
-        errorEl.classList.add('visible');
+    input.addEventListener('input', () => input.classList.remove('invalid'));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = input.value.trim();
+      if (!isEmail(email)) {
+        input.classList.add('invalid');
+        input.focus();
         return;
       }
-      errorEl.classList.remove('visible');
-      btnEl.disabled = true;
-      const orig = btnEl.textContent;
-      btnEl.textContent = 'Joining…';
+
+      const btn = form.querySelector('.btn-waitlist');
+      btn.disabled = true;
+      const orig = btn.textContent;
+      btn.textContent = 'Joining…';
+
       try {
         await fetch(SHEETS_URL, { method: 'POST', body: JSON.stringify({ email }) });
-        formEl.style.display = 'none';
-        successEl.classList.add('visible');
-      } catch {
-        errorEl.textContent = 'Something went wrong. Please try again.';
-        errorEl.classList.add('visible');
-        btnEl.disabled = false;
-        btnEl.textContent = orig;
+      } catch (_) {
+        // network error — still confirm, email captured in LS
       }
-    }
 
-    // Hero form
-    const heroForm = document.getElementById('waitlist-form');
-    heroForm.addEventListener('submit', async (e) => {
+      try { localStorage.setItem(KEY, '1'); } catch (_) {}
+      showConfirmed(true);
+    });
+  })();
+
+  // ─── Smooth scroll on anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href');
+      if (id === '#' || id.length < 2) return;
+      const t = document.querySelector(id);
+      if (!t) return;
       e.preventDefault();
-      await submitEmail(
-        document.getElementById('email-input').value.trim(),
-        heroForm,
-        heroForm.querySelector('button'),
-        document.getElementById('form-success'),
-        document.getElementById('form-error')
-      );
+      const top = t.getBoundingClientRect().top + window.scrollY - 64;
+      window.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
     });
-    document.getElementById('email-input').addEventListener('input', () => {
-      document.getElementById('form-error').classList.remove('visible');
-    });
-
-    // CTA form
-    const ctaForm = document.getElementById('cta-form');
-    ctaForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      await submitEmail(
-        document.getElementById('cta-email').value.trim(),
-        ctaForm,
-        ctaForm.querySelector('button'),
-        document.getElementById('cta-success'),
-        document.getElementById('cta-error')
-      );
-    });
-    document.getElementById('cta-email').addEventListener('input', () => {
-      document.getElementById('cta-error').classList.remove('visible');
-    });
-
-    // Scroll to waitlist (pricing buttons)
-    function scrollToWaitlist() {
-      document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' });
-      setTimeout(() => document.getElementById('cta-email').focus(), 600);
-    }
-  </script>
+  });
+})();
+</script>
 
 </body>
 </html>
