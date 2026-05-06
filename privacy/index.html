@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — YouAceIt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:    #E04B12;
+      --secondary:  #3D8C52;
+      --accent:     #6B4FA8;
+      --bg:         #F9F7F4;
+      --surface:    #FFFFFF;
+      --text:       #1A1714;
+      --muted:      #5C5652;
+      --border:     #E5E0DA;
+      --nav-bg:     #1A1714;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--nav-bg);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a {
+      color: #C9C4BE;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 200ms;
+      cursor: pointer;
+    }
+    .nav-links a:hover { color: #FFFFFF; }
+
+    /* ── HERO BAND ── */
+    .page-header {
+      background: var(--nav-bg);
+      padding: 48px 24px 56px;
+      text-align: center;
+      border-bottom: 3px solid var(--primary);
+    }
+    .page-header .badge {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .page-header h1 {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 600;
+      color: #FFFFFF;
+      margin-bottom: 12px;
+    }
+    .page-header p {
+      color: #A09890;
+      font-size: 0.95rem;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── TOC ── */
+    .toc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--secondary);
+      border-radius: 10px;
+      padding: 28px 32px;
+      margin: 40px 0 48px;
+    }
+    .toc-card h2 {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .toc-card ol {
+      padding-left: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 6px 24px;
+    }
+    .toc-card ol li a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 200ms;
+      cursor: pointer;
+    }
+    .toc-card ol li a:hover { color: var(--accent); text-decoration: underline; }
+
+    /* ── SECTIONS ── */
+    .section {
+      margin-bottom: 52px;
+      scroll-margin-top: 80px;
+    }
+    .section h2 {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section h3 {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 24px 0 10px;
+    }
+    .section p { color: var(--muted); margin-bottom: 14px; }
+    .section ul, .section ol {
+      padding-left: 22px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .section ul li, .section ol li { margin-bottom: 6px; }
+
+    /* ── INFO BOXES ── */
+    .info-box {
+      background: #EDF7F0;
+      border: 1px solid #B8DEC5;
+      border-left: 4px solid var(--secondary);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 0.9rem;
+      color: #2D6B40;
+    }
+    .warn-box {
+      background: #FEF3EE;
+      border: 1px solid #F6C8B4;
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 0.9rem;
+      color: #8A2D05;
+    }
+
+    /* ── DATA TABLE ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.9rem;
+    }
+    .data-table thead tr {
+      background: var(--nav-bg);
+      color: #FFFFFF;
+    }
+    .data-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      vertical-align: top;
+    }
+    .data-table tr:nth-child(even) td { background: #FDFCFB; }
+
+    /* ── CONTACT CTA ── */
+    .contact-cta {
+      background: linear-gradient(135deg, #1A1714 0%, #2E2924 100%);
+      border-radius: 12px;
+      padding: 36px 32px;
+      text-align: center;
+      margin: 48px 0 64px;
+    }
+    .contact-cta h3 {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.4rem;
+      color: #FFFFFF;
+      margin-bottom: 10px;
+    }
+    .contact-cta p { color: #A09890; margin-bottom: 20px; font-size: 0.95rem; }
+    .contact-cta a {
+      display: inline-block;
+      background: var(--primary);
+      color: #FFFFFF;
+      text-decoration: none;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: background 200ms, transform 150ms;
+      cursor: pointer;
+    }
+    .contact-cta a:hover { background: #c03e0e; transform: translateY(-1px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--nav-bg);
+      color: #7A7370;
+      padding: 32px 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      border-top: 1px solid #2E2924;
+    }
+    footer a { color: #A09890; text-decoration: none; transition: color 200ms; cursor: pointer; }
+    footer a:hover { color: #FFFFFF; }
+    footer .footer-links { margin-bottom: 12px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+
+    @media (max-width: 600px) {
+      .toc-card ol { grid-template-columns: 1fr; }
+      .data-table { font-size: 0.8rem; }
+      .data-table th, .data-table td { padding: 8px 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="https://www.youaceit.com" class="nav-logo">You<span>Ace</span>It</a>
+    <div class="nav-links">
+      <a href="https://www.youaceit.com/privacy">Privacy</a>
+      <a href="https://www.youaceit.com/terms">Terms</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <span class="badge">Legal</span>
+  <h1>Privacy Policy</h1>
+  <p>Effective Date: May 1, 2025 &nbsp;·&nbsp; Last Updated: May 1, 2025</p>
+</div>
+
+<div class="container">
+
+  <!-- TOC -->
+  <div class="toc-card">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#data-collected">Data We Collect</a></li>
+      <li><a href="#how-we-use">How We Use Your Data</a></li>
+      <li><a href="#third-parties">Third-Party Services</a></li>
+      <li><a href="#data-storage">Data Storage &amp; Security</a></li>
+      <li><a href="#health-data">Health &amp; Calendar Data</a></li>
+      <li><a href="#children">Children's Privacy</a></li>
+      <li><a href="#your-rights">Your Rights</a></li>
+      <li><a href="#data-retention">Data Retention</a></li>
+      <li><a href="#changes">Changes to This Policy</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ol>
+  </div>
+
+  <!-- 1 -->
+  <div class="section" id="overview">
+    <h2>1. Overview</h2>
+    <p>YouAceIt ("we," "our," or "us") is an AI-powered study planning application designed to help students preparing for A-Level, O-Level, International Baccalaureate (IB), and similar examinations. We are committed to protecting your privacy and being transparent about how we handle your personal information.</p>
+    <p>This Privacy Policy explains what data we collect, why we collect it, how it is used, and your rights regarding that data. By using YouAceIt, you agree to the practices described in this policy.</p>
+    <div class="info-box">
+      <strong>Our commitment:</strong> We do not sell your personal data to third parties. Ever.
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="section" id="data-collected">
+    <h2>2. Data We Collect</h2>
+    <p>We collect the following categories of information to provide and improve our service:</p>
+
+    <h3>Account &amp; Profile Information</h3>
+    <ul>
+      <li>Full name and username</li>
+      <li>Email address</li>
+      <li>Profile preferences and settings</li>
+      <li>Exam type (A-Level, O-Level, IB, etc.), year level, and subjects</li>
+      <li>Grade targets and exam dates</li>
+    </ul>
+
+    <h3>Study &amp; Academic Data</h3>
+    <ul>
+      <li>Study session records (duration, subject, topic, performance rating)</li>
+      <li>Topic mastery levels and spaced-repetition history</li>
+      <li>Scheduled study blocks and task items</li>
+      <li>Practice results and performance scores</li>
+      <li>XP points, streaks, and achievement data</li>
+    </ul>
+
+    <h3>Calendar &amp; Schedule Data</h3>
+    <ul>
+      <li>Google Calendar events (read-only, with your permission)</li>
+      <li>Google Tasks (read-only, with your permission)</li>
+      <li>Device calendar events (iOS/Android, with your permission)</li>
+    </ul>
+
+    <h3>Health &amp; Activity Data</h3>
+    <ul>
+      <li>Sleep duration and history (Apple HealthKit on iOS, with your permission)</li>
+      <li>Active calories and sleep data (Google Fit on Android, with your permission)</li>
+    </ul>
+
+    <h3>Social &amp; Community Data</h3>
+    <ul>
+      <li>Friend connections and challenge records (username-level only)</li>
+      <li>Weekly reports and shared activity summaries</li>
+    </ul>
+
+    <h3>Technical Data</h3>
+    <ul>
+      <li>Device type and operating system version</li>
+      <li>App usage analytics (crash reports, feature usage)</li>
+      <li>Authentication tokens (stored securely, never logged)</li>
+    </ul>
+
+    <table class="data-table" role="table" aria-label="Summary of data collected">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Examples</th>
+          <th>Required?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Account Info</td>
+          <td>Name, email, exam type</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td>Study Data</td>
+          <td>Sessions, topics, XP</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td>Calendar Data</td>
+          <td>Google Calendar, device calendar</td>
+          <td>Optional</td>
+        </tr>
+        <tr>
+          <td>Health Data</td>
+          <td>Sleep hours, activity (HealthKit/Google Fit)</td>
+          <td>Optional</td>
+        </tr>
+        <tr>
+          <td>Social Data</td>
+          <td>Friends, challenges</td>
+          <td>Optional</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3 -->
+  <div class="section" id="how-we-use">
+    <h2>3. How We Use Your Data</h2>
+    <p>We use the information we collect for the following purposes:</p>
+    <ul>
+      <li><strong>AI Study Planning:</strong> Generating personalised study schedules, identifying knowledge gaps, and applying spaced-repetition algorithms to optimise your revision.</li>
+      <li><strong>Schedule Generation:</strong> Computing free time slots from your calendar and health data to suggest study windows that fit your life.</li>
+      <li><strong>Performance Analytics:</strong> Tracking your progress, readiness scores, and burnout indicators over time.</li>
+      <li><strong>Gamification:</strong> Calculating XP, streaks, and challenge outcomes to keep you motivated.</li>
+      <li><strong>Service Improvement:</strong> Understanding how features are used to fix bugs and improve the app.</li>
+      <li><strong>Communications:</strong> Sending important service-related notifications (not marketing, unless you opt in).</li>
+      <li><strong>Security &amp; Fraud Prevention:</strong> Detecting and preventing unauthorised access to your account.</li>
+    </ul>
+  </div>
+
+  <!-- 4 -->
+  <div class="section" id="third-parties">
+    <h2>4. Third-Party Services</h2>
+    <p>YouAceIt integrates with the following third-party services. Each has its own privacy policy which we encourage you to review:</p>
+
+    <table class="data-table" role="table" aria-label="Third-party services">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Purpose</th>
+          <th>Data Shared</th>
+          <th>Privacy Policy</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Firebase (Google)</td>
+          <td>Authentication &amp; database</td>
+          <td>Account info, app data</td>
+          <td><a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">firebase.google.com</a></td>
+        </tr>
+        <tr>
+          <td>Google Calendar API</td>
+          <td>Read calendar events for scheduling</td>
+          <td>Calendar events (read-only)</td>
+          <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com</a></td>
+        </tr>
+        <tr>
+          <td>Google Tasks API</td>
+          <td>Read tasks for planning</td>
+          <td>Task items (read-only)</td>
+          <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com</a></td>
+        </tr>
+        <tr>
+          <td>Apple HealthKit</td>
+          <td>Sleep &amp; activity data (iOS)</td>
+          <td>Sleep hours, calories</td>
+          <td><a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">apple.com/legal/privacy</a></td>
+        </tr>
+        <tr>
+          <td>Google Fit</td>
+          <td>Sleep &amp; activity data (Android)</td>
+          <td>Sleep hours, activity</td>
+          <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warn-box">
+      <strong>Important:</strong> We only request the minimum permissions necessary. Calendar and health integrations are optional — you can use YouAceIt without granting these permissions.
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="section" id="data-storage">
+    <h2>5. Data Storage &amp; Security</h2>
+    <h3>Where Your Data Is Stored</h3>
+    <ul>
+      <li><strong>Firebase Firestore:</strong> Your account profile and all app data (study sessions, topics, exam info) are stored in Google Firebase Firestore, secured by Firestore security rules that allow only you to access your own data.</li>
+      <li><strong>Device Storage:</strong> A local cache of your data is stored on your device using AsyncStorage for fast, offline access. This data remains on your device and is not shared.</li>
+    </ul>
+
+    <h3>Security Measures</h3>
+    <ul>
+      <li>All data transmitted between the app and our servers is encrypted via HTTPS/TLS.</li>
+      <li>Authentication tokens are stored securely using platform-native secure storage.</li>
+      <li>Firestore security rules ensure each user can only read and write their own data.</li>
+      <li>We do not store passwords — authentication is handled by Firebase Auth (email/password or Google OAuth).</li>
+    </ul>
+  </div>
+
+  <!-- 6 -->
+  <div class="section" id="health-data">
+    <h2>6. Health &amp; Calendar Data</h2>
+    <p>Access to health and calendar data is entirely optional and requires your explicit permission:</p>
+    <ul>
+      <li><strong>Apple HealthKit (iOS):</strong> We request read-only access to sleep duration and active calories. This data is used solely to improve study schedule recommendations by avoiding sessions during low-energy periods. HealthKit data is never uploaded to our servers — it is processed on-device only.</li>
+      <li><strong>Google Fit (Android):</strong> We request read-only access to sleep and activity data for the same purpose as above.</li>
+      <li><strong>Google Calendar / Device Calendar:</strong> We request read-only access to identify free time slots in your schedule. Calendar event content (titles, descriptions) is processed locally to find gaps — individual event details are not stored in our database.</li>
+    </ul>
+    <div class="info-box">
+      You can revoke these permissions at any time through your device settings (iOS: Settings → Privacy → Health / Calendars; Android: Settings → Apps → YouAceIt → Permissions) or through your Google Account settings.
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="section" id="children">
+    <h2>7. Children's Privacy</h2>
+    <p>YouAceIt is designed for students, including those under the age of 18. We do not knowingly collect personal information from children under 13 without verifiable parental consent. If you are under 13, please use YouAceIt only with the involvement of a parent or guardian.</p>
+    <p>If you believe we have inadvertently collected information from a child under 13, please contact us at <a href="mailto:support@youaceit.app">support@youaceit.app</a> and we will delete it promptly.</p>
+  </div>
+
+  <!-- 8 -->
+  <div class="section" id="your-rights">
+    <h2>8. Your Rights</h2>
+    <p>Depending on your location, you may have the following rights regarding your personal data:</p>
+    <ul>
+      <li><strong>Access:</strong> Request a copy of all personal data we hold about you.</li>
+      <li><strong>Correction:</strong> Request that inaccurate or incomplete data be corrected.</li>
+      <li><strong>Deletion:</strong> Request that we delete your account and all associated data. You can initiate this from the app's Settings screen or by emailing us.</li>
+      <li><strong>Portability:</strong> Request your data in a portable format (JSON).</li>
+      <li><strong>Objection:</strong> Object to certain types of data processing.</li>
+      <li><strong>Withdraw Consent:</strong> Withdraw any permissions (calendar, health) you have previously granted at any time.</li>
+    </ul>
+    <p>To exercise any of these rights, contact us at <a href="mailto:support@youaceit.app">support@youaceit.app</a>. We will respond within 30 days.</p>
+  </div>
+
+  <!-- 9 -->
+  <div class="section" id="data-retention">
+    <h2>9. Data Retention</h2>
+    <p>We retain your personal data for as long as your account is active. When you delete your account:</p>
+    <ul>
+      <li>Your Firestore data is permanently deleted within 30 days.</li>
+      <li>Local device cache is cleared immediately upon account deletion.</li>
+      <li>Anonymous, aggregated analytics data (with no personal identifiers) may be retained for service improvement.</li>
+    </ul>
+  </div>
+
+  <!-- 10 -->
+  <div class="section" id="changes">
+    <h2>10. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. When we make material changes, we will notify you via in-app notification or email at least 14 days before the changes take effect. The updated policy will always be available at <a href="https://www.youaceit.com/privacy">www.youaceit.com/privacy</a>.</p>
+    <p>Continued use of YouAceIt after the effective date of any changes constitutes your acceptance of the updated policy.</p>
+  </div>
+
+  <!-- 11 -->
+  <div class="section" id="contact">
+    <h2>11. Contact Us</h2>
+    <p>If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your data, please reach out:</p>
+  </div>
+
+  <div class="contact-cta">
+    <h3>Questions about your privacy?</h3>
+    <p>We're here to help. Expect a response within 2 business days.</p>
+    <a href="mailto:support@youaceit.app">support@youaceit.app</a>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  <div class="footer-links">
+    <a href="https://www.youaceit.com">Home</a>
+    <a href="https://www.youaceit.com/privacy">Privacy Policy</a>
+    <a href="https://www.youaceit.com/terms">Terms of Service</a>
+    <a href="mailto:support@youaceit.app">Contact</a>
+  </div>
+  <p>&copy; 2025 YouAceIt. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

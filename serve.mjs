@@ -25,19 +25,31 @@ http.createServer((req, res) => {
   let urlPath = req.url.split('?')[0];
   if (urlPath === '/') urlPath = '/index.html';
 
-  const filePath = path.join(__dirname, urlPath);
-  const ext = path.extname(filePath).toLowerCase();
-  const contentType = MIME[ext] || 'application/octet-stream';
+  let filePath = path.join(__dirname, urlPath);
 
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
+  // Try the path as-is, then as a directory index, then with .html extension
+  const candidates = [
+    filePath,
+    path.join(filePath, 'index.html'),
+    filePath + '.html',
+  ];
+
+  const tryNext = (i) => {
+    if (i >= candidates.length) {
       res.writeHead(404);
       res.end('Not found');
       return;
     }
-    res.writeHead(200, { 'Content-Type': contentType });
-    res.end(data);
-  });
+    fs.readFile(candidates[i], (err, data) => {
+      if (err) { tryNext(i + 1); return; }
+      const ext = path.extname(candidates[i]).toLowerCase();
+      const contentType = MIME[ext] || 'application/octet-stream';
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(data);
+    });
+  };
+
+  tryNext(0);
 }).listen(PORT, () => {
   console.log(`Serving at http://localhost:${PORT}`);
 });
